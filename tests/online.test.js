@@ -33,6 +33,9 @@ test('100 крышек раз в сутки, комнаты: открытые в
   const priv = await a.next(m => m.t == 'room');
   b.send({ t: 'list', pid: 'B1' });
   assert.equal((await b.next(m => m.t == 'rooms')).rooms.some(r => r.code == priv.code), false);   // приватная скрыта
+  a.send({ t: 'create', pid: 'A1', bet: 50 });                            // вторую комнату создать нельзя
+  assert.match((await a.next(m => m.t == 'err')).msg, /уже есть комната/);
+  a.send({ t: 'leave' }); await a.next(m => m.t == 'left');
   a.send({ t: 'create', pid: 'A1', bet: 50 });
   const pub = await a.next(m => m.t == 'room');
   b.send({ t: 'list', pid: 'B1' });
@@ -101,4 +104,30 @@ test('статистика: онлайн, игроки за день, парти
     const html = await (await fetch(`http://localhost:${port}/stats?key=${encodeURIComponent('секрет')}`)).text();
     assert.match(html, /Онлайн сейчас/);
   } finally { delete process.env.STATS_KEY; a.ws.close(); server.close(); server.closeAllConnections?.(); }
+});
+
+test('таймер: сервер шлёт остаток времени, комната знает о приватности, выход из ждущей комнаты', async () => {
+  const server = await start(0), port = server.address().port;
+  const a = client(port), b = client(port);
+  await Promise.all([a.open, b.open]);
+  try {
+    a.send({ t: 'hello', pid: 'L1', name: 'А' }); await a.next(m => m.t == 'me');
+    b.send({ t: 'hello', pid: 'L2', name: 'Б' }); await b.next(m => m.t == 'me');
+    a.send({ t: 'create', bet: 0, priv: true });
+    const r = await a.next(m => m.t == 'room');
+    assert.equal(r.priv, true); assert.equal(r.bet, 0);
+    // из ждущей комнаты можно выйти: она исчезает, код больше не работает
+    a.send({ t: 'leave' }); await a.next(m => m.t == 'left');
+    b.send({ t: 'join', code: r.code });
+    assert.match((await b.next(m => m.t == 'err')).msg, /не найдена/);
+    // новая комната: после входа соперника приходит остаток времени (не абсолютное время сервера)
+    a.send({ t: 'create', bet: 0, priv: false });
+    const r2 = await a.next(m => m.t == 'room'); assert.equal(r2.priv, false);
+    b.send({ t: 'join', code: r2.code });
+    const st = await b.next(m => m.t == 'state');
+    assert.ok(st.left > 0 && st.left <= 300, 'left=' + st.left);
+    // посреди партии выйти нельзя
+    a.send({ t: 'leave' });
+    assert.match((await a.next(m => m.t == 'err')).msg, /посреди партии/);
+  } finally { a.ws.close(); b.ws.close(); server.close(); server.closeAllConnections?.(); }
 });

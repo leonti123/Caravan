@@ -8,7 +8,9 @@ import { fileURLToPath } from 'node:url';
 import { newGame, play, viewFor } from '../shared/rules.js';
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
-const MIME = { '.html': 'text/html;charset=utf-8', '.js': 'text/javascript', '.json': 'application/json', '.webp': 'image/webp', '.png': 'image/png', '.svg': 'image/svg+xml', '.css': 'text/css', '.md': 'text/plain;charset=utf-8' };
+const MIME = { '.html': 'text/html;charset=utf-8', '.js': 'text/javascript', '.json': 'application/json', '.webp': 'image/webp', '.png': 'image/png', '.svg': 'image/svg+xml', '.css': 'text/css', '.md': 'text/plain;charset=utf-8', '.mp3': 'audio/mpeg', '.ogg': 'audio/ogg', '.m4a': 'audio/mp4', '.wav': 'audio/wav', '.opus': 'audio/ogg', '.flac': 'audio/flac' };
+const AUDIO = /\.(mp3|ogg|m4a|wav|opus|flac)$/i;
+const LEAVE_MS = process.env.LEAVE_MS === undefined ? 8000 : Number(process.env.LEAVE_MS); // сколько ждём возвращения игрока после обрыва связи
 const PUBLIC = ['index.html', 'shared', 'art'];
 const TURN_MS = Number(process.env.TURN_MS) || 90000;
 
@@ -161,7 +163,7 @@ const newCode = () => {
 function pushState(room) {
   room.players.forEach((pl, seat) => {
     if (!pl || !pl.conn || !room.game) return;
-    send(pl.conn, { t: 'state', code: room.code, seat, view: viewFor(room.game, seat), deadline: room.deadline, opp: !!room.players[1 - seat]?.conn });
+    send(pl.conn, { t: 'state', code: room.code, seat, view: viewFor(room.game, seat), deadline: room.deadline, left: room.deadline ? Math.max(0, room.deadline - Date.now()) : 0, opp: !!room.players[1 - seat]?.conn });
   });
 }
 function armTimer(room) {
@@ -176,7 +178,21 @@ function armTimer(room) {
 }
 function startGame(room) { room.game = newGame(); room.settled = false; armTimer(room); }
 function makeRoom(code) { const room = { code, players: [null, null], game: null, timer: null, deadline: 0, touched: Date.now(), priv: false, bet: 0, name: '' }; rooms.set(code, room); return room; }
+function leaveRoom(conn) { // выйти из комнаты: нельзя посреди партии; ждущую комнату освобождаем, законченную просто отвязываем
+  if (waiting && waiting.conn === conn) waiting = null;
+  const room = conn.room;
+  if (!room) return true;
+  if (room.game && !room.game.over) return false;
+  if (!room.game) {
+    const pl = room.players[conn.seat];
+    if (pl && pl.conn === conn) room.players[conn.seat] = null;
+    if (!room.players[0] && !room.players[1]) { clearTimeout(room.timer); rooms.delete(room.code); }
+  }
+  conn.room = null; conn.seat = -1;
+  return true;
+}
 function seatIn(room, seat, pid, conn) {
+  clearTimeout(room.players[seat]?.gone);
   room.players[seat] = { pid, conn }; conn.room = room; conn.seat = seat; conn.pid = pid;
 }
 
@@ -207,28 +223,40 @@ function handle(conn, raw) {
     if (!pid) return err('Нет идентификатора');
     const bet = BETS.includes(m.bet) ? m.bet : 0, u = user(pid);
     if (u.bal < bet) return err('Не хватает крышек для такой ставки');
+    for (const r of [...rooms.values()]) { // у игрока может быть только одна комната (в т.ч. из другой вкладки)
+      const seat = r.players.findIndex(x => x && x.pid == pid); if (seat < 0) continue;
+      if (r.game?.over || !r.players[seat].conn) { deleteRoom(r); continue; } // старая законченная или брошенная
+      return err(r.game ? 'Сначала доиграй текущую партию' : 'У тебя уже есть комната ' + r.code + '. Выйди из неё, чтобы создать новую');
+    }
+    if (!leaveRoom(conn)) return err('Сначала доиграй текущую партию');
     const room = makeRoom(newCode()); room.priv = !!m.priv; room.bet = bet; room.name = u.n; seatIn(room, 0, pid, conn);
-    send(conn, { t: 'room', code: room.code, seat: 0 });
+    send(conn, { t: 'room', code: room.code, seat: 0, priv: room.priv, bet: room.bet });
   } else if (m.t == 'join') {
     const room = rooms.get(String(m.code || '').toUpperCase());
     if (!pid) return err('Нет идентификатора');
     if (!room) return err('Комната не найдена');
+    if (conn.room && conn.room !== room && !leaveRoom(conn)) return err('Сначала доиграй текущую партию');
     let seat = room.players.findIndex(x => x && x.pid == pid);
     if (seat < 0) {
       seat = room.players.findIndex(x => !x); if (seat < 0) return err('Комната занята');
+      if (room.game) return err('Партия в этой комнате уже закончилась');
       if (room.bet > 0 && user(pid).bal < room.bet) return err('Не хватает крышек: ставка ' + room.bet);
     }
     seatIn(room, seat, pid, conn); room.touched = Date.now();
-    send(conn, { t: 'room', code: room.code, seat });
+    send(conn, { t: 'room', code: room.code, seat, priv: room.priv, bet: room.bet });
     if (room.players[0] && room.players[1] && !room.game) startGame(room);
     pushState(room);
     if (room.game) room.players.forEach((pl, s) => { if (s != seat) send(pl?.conn, { t: 'opp', online: true }); });
+  } else if (m.t == 'leave') {
+    if (!leaveRoom(conn)) return err('Нельзя выйти посреди партии');
+    send(conn, { t: 'left' });
   } else if (m.t == 'queue') {
     if (!pid) return err('Нет идентификатора');
+    if (!leaveRoom(conn)) return err('Сначала доиграй текущую партию');
     if (waiting && waiting.conn !== conn && !waiting.conn.sock.destroyed) {
       const room = makeRoom(newCode());
       seatIn(room, 0, waiting.pid, waiting.conn); seatIn(room, 1, pid, conn); waiting = null;
-      room.players.forEach((pl, seat) => send(pl.conn, { t: 'room', code: room.code, seat }));
+      room.players.forEach((pl, seat) => send(pl.conn, { t: 'room', code: room.code, seat, priv: false, bet: 0 }));
       startGame(room); pushState(room);
     } else { waiting = { pid, conn }; send(conn, { t: 'queued' }); }
   } else if (m.t == 'move') {
@@ -242,12 +270,29 @@ function handle(conn, raw) {
   }
 }
 
+function deleteRoom(room) { // комната исчезает целиком: из списка, из памяти, таймеры гасим
+  clearTimeout(room.timer); room.players.forEach(pl => clearTimeout(pl?.gone));
+  rooms.delete(room.code);
+  room.players.forEach(pl => { if (pl?.conn && pl.conn.room === room) { pl.conn.room = null; pl.conn.seat = -1; } });
+}
+function onGone(room, seat) { // игрок не вернулся вовремя
+  const g = room.game;
+  if (g && !g.over) { // партия идёт: ушедший проигрывает, ставка уходит сопернику
+    clearTimeout(room.timer); g.over = true; g.winner = 1 - seat; g.last = { p: seat, t: 'leave' }; room.deadline = 0;
+    settle(room); pushState(room);
+  }
+  deleteRoom(room);
+}
 function onClose(conn) {
   if (waiting && waiting.conn === conn) waiting = null;
   const room = conn.room;
   if (!room) return;
   const pl = room.players[conn.seat];
-  if (pl && pl.conn === conn) { pl.conn = null; send(room.players[1 - conn.seat]?.conn, { t: 'opp', online: false }); }
+  if (!pl || pl.conn !== conn) return;
+  pl.conn = null; send(room.players[1 - conn.seat]?.conn, { t: 'opp', online: false });
+  const seat = conn.seat;
+  if (!room.game && !room.players[1 - seat]) return deleteRoom(room); // один в ждущей комнате: удаляем сразу
+  pl.gone = setTimeout(() => onGone(room, seat), LEAVE_MS); pl.gone.unref?.();
 }
 
 // ---------- HTTP ----------
@@ -262,13 +307,28 @@ function serveStatic(req, res) {
     res.writeHead(200, { 'Content-Type': json ? 'application/json' : 'text/html;charset=utf-8', 'Cache-Control': 'no-store' });
     return res.end(statsPage(json));
   }
+  if (p == '/music') { // треки из art/music (любые имена файлов)
+    let list = []; try { list = fs.readdirSync(path.join(ROOT, 'art', 'music')).filter(f => AUDIO.test(f)).sort().map(f => ({ name: f.replace(/\.[^.]+$/, ''), url: 'art/music/' + encodeURIComponent(f) })); } catch {}
+    res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' }); return res.end(JSON.stringify(list));
+  }
   if (p == '/') p = '/index.html';
   const rel = path.normalize(p).replace(/^[/\\]+/, '');
   const full = path.join(ROOT, rel);
   if (!full.startsWith(ROOT + path.sep) || !PUBLIC.includes(rel.split(path.sep)[0])) { res.writeHead(404); return res.end('Not found'); }
+  if (AUDIO.test(full)) { // аудио отдаём кусками (Range): без этого Safari/Telegram на iPhone не играют
+    return fs.stat(full, (e, st) => {
+      if (e || !st.isFile()) { res.writeHead(404); return res.end('Not found'); }
+      const m = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range || ''), type = MIME[path.extname(full).toLowerCase()] || 'application/octet-stream';
+      let a = 0, b = st.size - 1;
+      if (m && (m[1] || m[2])) { if (m[1]) { a = +m[1]; if (m[2]) b = Math.min(+m[2], b); } else { a = Math.max(0, st.size - +m[2]); } }
+      if (a > b || a >= st.size) { res.writeHead(416, { 'Content-Range': 'bytes */' + st.size }); return res.end(); }
+      res.writeHead(m ? 206 : 200, { 'Content-Type': type, 'Accept-Ranges': 'bytes', 'Content-Length': b - a + 1, ...(m ? { 'Content-Range': `bytes ${a}-${b}/${st.size}` } : {}) });
+      fs.createReadStream(full, { start: a, end: b }).on('error', () => res.destroy()).pipe(res);
+    });
+  }
   fs.readFile(full, (e, data) => {
     if (e) { res.writeHead(404); return res.end('Not found'); }
-    res.writeHead(200, { 'Content-Type': MIME[path.extname(full)] || 'application/octet-stream', 'Cache-Control': 'no-cache' });
+    res.writeHead(200, { 'Content-Type': MIME[path.extname(full).toLowerCase()] || 'application/octet-stream', 'Cache-Control': 'no-cache' });
     res.end(data);
   });
 }

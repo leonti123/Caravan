@@ -107,7 +107,20 @@ aside{display:grid;grid-template-rows:auto 1fr auto;gap:4px;min-height:0}
 #ovB .btn{display:block;width:100%;margin:3px 0}
 .lbr{display:flex;gap:8px;padding:4px 6px;border-bottom:1px solid #f0a83033}.lbr b{width:24px;color:#46c4ff}.lbr span{flex:1}
 .lbn{font-size:12px;opacity:.8;margin:4px 0;text-align:center}
+#rbadge{position:absolute;left:6px;top:calc(4px + var(--tgi));z-index:30;display:none;background:#000b;border:1px solid #f0a830;color:#f0a830;border-radius:8px;padding:2px 9px;font:700 13px Georgia,serif;cursor:pointer}
+@media (orientation:portrait){#rbadge{top:4px;left:calc(6px + var(--tgi))}}
+#wait{position:absolute;inset:0;z-index:9;display:none;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:#000a;border-radius:8px;text-align:center;padding:8px}
+#wait h2{margin:0;font:400 22px Rye,Georgia,serif;color:#f0a830}
+#waitCode{font:400 46px Rye,Georgia,serif;letter-spacing:8px;color:#f0dcae}
+#wait .btn{flex:none;width:230px}
 #toast{position:absolute;left:50%;top:10px;transform:translateX(-50%);z-index:20;background:#000d;border:1px solid #f0a830;color:#f0a830;border-radius:8px;padding:6px 12px;display:none;max-width:90%;text-align:center}
+#mus{position:absolute;inset:0;z-index:14;background:#000e;display:none;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:8px;padding:8px}
+#mus h2{margin:0;font:400 22px Rye,Georgia,serif;color:#f0a830}
+#musL{width:min(92%,420px);max-height:48%;overflow:auto}
+.mrow{display:flex;gap:4px;margin:3px 0}.mrow .btn{text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mrow .btn.on{border-color:#46c4ff;color:#46c4ff}.mrow .x{flex:none;padding:0 9px}
+.mctl{display:flex;gap:6px;width:min(92%,420px)}.mctl input[type=range]{flex:1;min-width:0;accent-color:#f0a830}
+.pip{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:0;color:#f0a830;font:inherit;cursor:pointer;padding:2px 8px}
+.pip svg{width:46px;height:46px}
 </style></head><body>
 <div id="app">
 <main id="board"><div class="row" id="r1"></div><div class="row" id="mid"></div><div class="row" id="r0"></div></main>
@@ -117,23 +130,30 @@ aside{display:grid;grid-template-rows:auto 1fr auto;gap:4px;min-height:0}
 <div class="bot"><div class="hand me" id="hand"></div><div class="deck back" id="dd"></div></div>
 </aside>
 <div id="menu"><h2>Караван</h2>
+<button class="pip" id="bMus" aria-label="Музыка"><svg viewBox="0 0 64 64"><rect x="4" y="22" width="12" height="20" rx="3" fill="#4a3322" stroke="#f0a830" stroke-width="2"/><rect x="48" y="22" width="12" height="20" rx="3" fill="#4a3322" stroke="#f0a830" stroke-width="2"/><rect x="12" y="10" width="40" height="44" rx="6" fill="#2a1d12" stroke="#f0a830" stroke-width="3"/><rect x="17" y="15" width="30" height="21" rx="3" fill="#0d2a1a" stroke="#46c4ff" stroke-width="2"/><path d="M22 28h4l2-6 3 10 3-8 2 4h5" fill="none" stroke="#46c4ff" stroke-width="2" stroke-linejoin="round"/><circle cx="23" cy="45" r="3.5" fill="#f0a830"/><circle cx="33" cy="45" r="3.5" fill="#f0a830"/><rect x="40" y="42" width="7" height="6" rx="1" fill="#f0a830"/></svg>Музыка</button>
+<button class="btn" id="bBack" style="display:none">Вернуться в игру</button>
 <div class="cols">
 <div class="col"><h3>С ботом</h3>
 <button class="btn" id="bBot">Против бота</button>
 <div class="jr"><button class="btn" id="bDeck">Колода</button><button class="btn" id="bBet">Ставка</button></div>
-<div id="bal"></div></div>
+<div id="bal"></div>
+<button class="btn" id="bSnd"></button></div>
 <div class="col"><h3>Онлайн</h3>
 <input class="nick" id="nick" maxlength="16" placeholder="Твоё имя" autocomplete="off">
 <div id="obal">Подключаюсь…</div>
 <div class="jr"><button class="btn" id="bQ">Быстрый поиск</button><button class="btn" id="bOBet">Ставка</button></div>
-<div class="jr"><button class="btn" id="bNew">Открытая</button><button class="btn" id="bPriv">Приватная</button></div>
+<button class="btn" id="bNew">Создать открытую комнату</button>
+<button class="btn" id="bPriv">Создать приватную комнату</button>
 <div class="jr"><button class="btn" id="bList">Комнаты</button><button class="btn" id="bTop">Рейтинг</button></div>
 <div class="jr"><input id="code" maxlength="4" placeholder="Код" autocomplete="off"><button class="btn" id="bJoin">Войти</button></div>
 </div></div>
 <div id="mErr"></div></div>
+<div id="rbadge"></div>
+<div id="wait"><h2>Ждём соперника…</h2><div id="waitCode"></div><div class="lbn" id="waitInfo"></div><button class="btn" id="wCopy">Скопировать код</button><button class="btn" id="wMenu">В меню</button><button class="btn" id="wLeave">Выйти из комнаты</button></div>
 <div id="dk"><h2>Колода</h2><div id="dkSets"></div><div id="dkGrid"></div><div id="dkInfo"></div>
 <div class="jr" style="width:min(96%,520px)"><button class="btn" id="dkAll">Все</button><button class="btn" id="dkFast">Быстрая</button><button class="btn" id="dkClr">Очистить</button><button class="btn" id="dkOk">Готово</button></div></div>
 <div id="ov"><h2 id="ovT"></h2><div id="ovB"></div><button class="btn" id="ovX" style="width:160px">Закрыть</button></div>
+<div id="mus"><h2>Музыка</h2><div id="musL"></div><div class="mctl"><button class="btn" id="musP">⏮</button><button class="btn" id="musT">▶</button><button class="btn" id="musN">⏭</button></div><div class="mctl"><span>🔈</span><input type="range" id="musV" min="0" max="1" step=".05"></div><input type="file" id="musF" accept="audio/*" multiple hidden><div class="mctl"><button class="btn" id="musU">Загрузить свои</button><button class="btn" id="musX">Закрыть</button></div></div>
 <div id="toast"></div></div>
 <script>
 // Telegram Mini App: раскрыть на весь экран и попробовать зафиксировать альбомную ориентацию.
@@ -156,7 +176,8 @@ const fan=(x,n)=>{const p=n>1?x/(n-1):.5;return`--p:${p.toFixed(3)};--d:${((p-.5
 const nm=(c,s=c.s)=>c.r?R[c.r]+SU[s]:'🃏',$=id=>document.getElementById(id);
 const store={get:k=>{try{return localStorage.getItem(k)}catch{return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch{}},del:k=>{try{localStorage.removeItem(k)}catch{}}};
 const pid=store.get('caravan.pid')||(()=>{const v=crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2)+Date.now();store.set('caravan.pid',v);return v})();
-let V=null,S=null,ws=null,sel=-1,note='',deadline=0,oppOn=true,online=false,code='';
+let V=null,S=null,ws=null,sel=-1,note='',deadline=0,oppOn=true,online=false,code='',room=null;
+const menuOn=()=>getComputedStyle($('menu')).display!='none';
 
 // ---- арты: кладёшь файл в art/, он подхватывается; нет файла — рисуется запасная графика
 const ART={cards:{}},EXT='webp',DIR='art/',key=c=>c.r?'SHDC'[c.s]+c.r:'JK';
@@ -167,6 +188,19 @@ async function loadArt(){const ks=[];for(const s of'SHDC')for(let r=1;r<=13;r++)
  if(b){a.classList.add('hasback');a.style.setProperty('--back',`url(${b})`)}
  if(t){a.classList.add('hastable');a.style.setProperty('--table',`url(${t})`)}
  render()}
+
+// ---- звук: карта ложится на стол (синтезируется, внешних файлов нет)
+let AC=null,snd=store.get('caravan.snd')!=='0',lastCnt=-1;
+const unlock=()=>{try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state=='suspended')AC.resume()}catch{}};
+addEventListener('pointerdown',unlock);addEventListener('touchstart',unlock);addEventListener('keydown',unlock);
+function cardSound(){if(!snd||!AC||AC.state!='running')return;
+ const t=AC.currentTime,g=AC.createGain(),len=Math.floor(AC.sampleRate*.09),buf=AC.createBuffer(1,len,AC.sampleRate),d=buf.getChannelData(0);
+ for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,3);
+ const n=AC.createBufferSource(),f=AC.createBiquadFilter();n.buffer=buf;f.type='bandpass';f.frequency.value=1400+Math.random()*900;f.Q.value=.8;
+ n.connect(f);f.connect(g);g.connect(AC.destination);g.gain.setValueAtTime(.55,t);g.gain.exponentialRampToValueAtTime(.001,t+.12);n.start(t);
+ const o=AC.createOscillator(),og=AC.createGain();o.type='sine';o.frequency.setValueAtTime(170+Math.random()*30,t);o.frequency.exponentialRampToValueAtTime(55,t+.09);
+ og.gain.setValueAtTime(.5,t);og.gain.exponentialRampToValueAtTime(.001,t+.11);o.connect(og);og.connect(AC.destination);o.start(t);o.stop(t+.12)}
+const tableCount=()=>V.car.flat().reduce((n,k)=>n+k.cards.reduce((m,e)=>m+1+e.att.length,0),0);
 
 // ---- отрисовка
 const PP={2:[[50,22],[50,78]],3:[[50,22],[50,50],[50,78]],4:[[30,22],[70,22],[30,78],[70,78]],5:[[30,22],[70,22],[50,50],[30,78],[70,78]],6:[[30,22],[70,22],[30,50],[70,50],[30,78],[70,78]],7:[[30,22],[70,22],[50,36],[30,50],[70,50],[30,78],[70,78]],8:[[30,22],[70,22],[50,36],[30,50],[70,50],[50,64],[30,78],[70,78]],9:[[30,20],[70,20],[30,40],[70,40],[50,50],[30,60],[70,60],[30,80],[70,80]],10:[[30,18],[70,18],[50,29],[30,40],[70,40],[30,60],[70,60],[50,71],[30,82],[70,82]]};
@@ -179,14 +213,15 @@ function laneH(p,i){const k=V.car[p][i];
 function midH(i){const a=cv(V.car[1][i]),b=cv(V.car[0][i]),k=V.car[0][i],cl=v=>v>26?'bad':v>=21?'ok':'';
  return`<div class="mc"><b class="${cl(a)}">${a}</b><i>${PL[i]}${k.dir>0?' ↑':k.dir<0?' ↓':''}</i><b class="${cl(b)}">${b}</b>${k.cards.length?`<button class="x" data-dcar="${i}" aria-label="Распустить караван">✕</button>`:''}</div>`}
 function text(){if(note)return note;if(!V)return'';const l=V.last;
- if(V.over){if(V.winner==0)return l&&l.t=='timeout'?'Соперник не успел сходить. Победа!':'Победа! Ты продал больше караванов.';return l&&l.t=='timeout'&&l.who==0?'Время вышло. Поражение.':'Поражение. Соперник выиграл партию.'}
+ if(V.over){if(V.winner==0)return l&&l.t=='leave'?'Соперник вышел из игры. Победа!':l&&l.t=='timeout'?'Соперник не успел сходить. Победа!':'Победа! Ты продал больше караванов.';return l&&l.t=='leave'&&l.who==0?'Ты вышел из игры. Поражение.':l&&l.t=='timeout'&&l.who==0?'Время вышло. Поражение.':'Поражение. Соперник выиграл партию.'}
  if(V.turn==1)return'Ход соперника…';
  if(sel>=0)return isN(V.hand[0][sel])?'Нажми на свой караван.':'Нажми на карту в любом караване.';
  return(l&&l.who==1?'Соперник '+WHAT[l.t]+'. ':'')+(V.open[0]>0?'Выложи число (A–10) в пустой караван.':'Твой ход.')}
 function infoText(){if(!online)return'Бот · ставка '+bet+' · крышки: '+bal;
- const s=deadline&&V&&!V.over?' · '+Math.max(0,Math.ceil((deadline-Date.now())/1000))+' с':'';
+ const s=deadline&&V&&!V.over?' · '+Math.max(0,Math.floor((deadline-Date.now())/1000))+' с':'';
  return`Комната ${code}${oppOn?'':' · соперник отключился'}${s}`}
 function render(){if(!V)return;
+ const tc=tableCount();if(lastCnt>=0&&tc>lastCnt)cardSound();lastCnt=tc;
  if(V.over&&!online&&!settled){settled=true;bal=Math.max(0,bal+(V.winner==0?bet:-bet));saveBal()}
  $('r1').innerHTML=[0,1,2].map(i=>laneH(1,i)).join('');$('mid').innerHTML=[0,1,2].map(midH).join('');$('r0').innerHTML=[0,1,2].map(i=>laneH(0,i)).join('');
  $('oh').innerHTML=V.hand[1].map((_,x)=>`<div class="h back" style="${fan(x,V.hand[1].length)}"></div>`).join('');
@@ -201,7 +236,7 @@ function act(m){sel=-1;note='';
  const e=play(S,0,m);if(e){note=e;return render()}
  V=viewFor(S,0);render();if(!S.over)setTimeout(botTurn,700)}
 function botTurn(){if(!S||S.over||online)return;const bm=botMove(S,1);if(bm)play(S,1,bm);V=viewFor(S,0);render()}
-const showMenu=b=>{$('menu').style.display=b?'flex':'none'};
+const showMenu=b=>{$('menu').style.display=b?'flex':'none';uiDraw()};
 
 // ---- сеть
 const tgInit=()=>{try{return Telegram.WebApp.initData||''}catch{return''}};
@@ -216,7 +251,7 @@ function connect(then){
  ws=new WebSocket(SERVER||(location.protocol=='https:'?'wss://':'ws://')+location.host);
  ws.onopen=()=>{tx({t:'hello',name:myName()});then()};ws.onmessage=e=>onMsg(JSON.parse(e.data));
  ws.onerror=()=>{$('mErr').textContent='Нет связи с сервером. Онлайн работает только на запущенном сервере.'};
- ws.onclose=()=>{if(online&&V&&!V.over){note='Связь потеряна. Переподключаюсь…';render();setTimeout(resume,2000)}}}
+ ws.onclose=()=>{if(online&&(room&&!V||V&&!V.over)){note='Связь потеряна. Переподключаюсь…';render();setTimeout(resume,2000)}}}
 function resume(){const c=store.get('caravan.room');if(c)connect(()=>tx({t:'join',code:c}))}
 const CAP=(()=>{let p='';for(let i=0;i<24;i++){const a=i*Math.PI/12,r=i%2?44:50;p+=(i?'L':'M')+(50+r*Math.cos(a)).toFixed(1)+' '+(50+r*Math.sin(a)).toFixed(1)}
  return`<svg class="cap" viewBox="0 0 100 100"><path d="${p}Z" fill="#a8672a" stroke="#4a2a0e" stroke-width="4"/><circle cx="50" cy="50" r="33" fill="#d6a352" stroke="#6b3d14" stroke-width="3"/><circle cx="50" cy="50" r="22" fill="none" stroke="#8a5420" stroke-width="2.5"/><path d="M28 40Q50 20 72 40" fill="none" stroke="#fff7" stroke-width="5" stroke-linecap="round"/></svg>`})();
@@ -232,13 +267,31 @@ function onMsg(m){
   else if(m.delta)toast(m.delta>0?'Выиграно '+m.delta+' крышек':'Проиграно '+(-m.delta)+' крышек')}
  else if(m.t=='rooms')showOv('Открытые комнаты',m.rooms.length?m.rooms.map(r=>`<button class="btn rm" data-c="${esc(r.code)}">${esc(r.code)} · ${esc(r.name)} · ставка ${+r.bet}${CAP}</button>`).join(''):'<div class="lbn">Открытых комнат нет. Создай свою.</div>')
  else if(m.t=='lb')showOv('Рейтинг: победы за сутки',(m.from?`<div class="lbn">Итоги ${fmtT(m.from)} — ${fmtT(m.to)} МСК</div>`+(m.rows.length?m.rows.map((r,i)=>`<div class="lbr"><b>${i+1}</b><span>${esc(r.n)}</span>${r.w}</div>`).join(''):'<div class="lbn">В те сутки никто не побеждал.</div>'):'<div class="lbn">Итогов пока нет.</div>')+`<div class="lbn">Твои победы в текущие сутки: ${m.w}<br>Рейтинг обновится ${fmtT(m.next)} МСК (каждый день в 14:00)</div>`)
- else if(m.t=='room'){code=m.code;store.set('caravan.room',code);$('mErr').textContent='Комната '+code+(obet?' (ставка '+obet+')':'')+'. Отправь код другу или жди соперника из списка…'}
+ else if(m.t=='room'){const fresh=!V||V.over||m.code!==code;
+  if(fresh){V=null;S=null;online=true;lastCnt=-1;clearBoard()}
+  room={code:m.code,priv:!!m.priv,bet:m.bet|0};code=m.code;store.set('caravan.room',code);$('mErr').textContent='';
+  if(fresh)showMenu(false);else uiDraw()}
  else if(m.t=='queued')$('mErr').textContent='Ищем соперника…';
- else if(m.t=='state'){online=true;V=m.view;code=m.code;deadline=m.deadline;oppOn=m.opp;sel=-1;note='';showMenu(false);render()}
+ else if(m.t=='state'){const cont=V&&online&&!V.over&&code===m.code;online=true;V=m.view;code=m.code;deadline=m.left!==undefined?(m.left?Date.now()+m.left:0):m.deadline;oppOn=m.opp;sel=-1;note='';
+  room=room&&room.code===m.code?room:{code:m.code,priv:false,bet:0};if(!cont)showMenu(false);else uiDraw();render()}
  else if(m.t=='opp'){oppOn=m.online;if(V)$('info').textContent=infoText()}
  else if(m.t=='err'){if(m.msg=='Комната не найдена')store.del('caravan.room');
-  if($('menu').style.display=='flex')$('mErr').textContent=m.msg;else{note=m.msg;render()}}}
-const net=o=>{$('mErr').textContent='';connect(()=>tx(o))};
+  if(menuOn())$('mErr').textContent=m.msg;else{note=m.msg;render()}}}
+const net=o=>{$('mErr').textContent='';
+ if(['create','join','queue'].includes(o.t)){
+  if(V&&online&&!V.over){$('mErr').textContent='У тебя идёт партия. Нажми «Вернуться в игру».';return}
+  if(V&&!online&&!V.over){V=null;S=null} // начал онлайн — партия с ботом брошена
+ }
+ connect(()=>tx(o))};
+function clearBoard(){['r1','mid','r0','oh','hand'].forEach(i=>$(i).innerHTML='')}
+function uiDraw(){const on=menuOn();
+ $('bBack').style.display=(V&&!V.over)||(room&&!V)?'':'none';
+ $('wait').style.display=room&&!V&&!on?'flex':'none';
+ const b=$('rbadge');b.style.display=room&&!on?'block':'none';
+ if(room){b.textContent=room.priv?'🔒 Код: '+room.code:'Комната '+room.code;$('waitCode').textContent=room.code;
+  $('waitInfo').innerHTML=(room.priv?'Приватная комната: соперник входит только по коду. Отправь ему этот код.':'Открытая комната: её видно другим в списке «Комнаты». Можно и отправить код.')+(room.bet?'<br>Ставка: '+room.bet+CAP:'')}}
+function copyCode(){if(!room)return;const c=room.code,done=()=>toast('Код '+c+' скопирован'),fail=()=>toast('Код комнаты: '+c);
+ try{navigator.clipboard.writeText(c).then(done,fail)}catch{fail()}}
 
 // ---- колода, наборы и ставки (против бота)
 const dkS='caravan.deck',balS='caravan.bal';
@@ -265,11 +318,17 @@ $('dkFast').onclick=()=>{dk.cnt={};dkAllKeys().forEach(([s,r])=>dk.cnt[dkKey(s,r
 $('dk').onclick=e=>{if(e.target.id=='dkN'){dk.sets=dk.sets%3+1;return dkDraw()}
  const b=e.target.closest('.dkc');if(!b)return;const[s,r]=b.dataset.k.split(',').map(Number),c=Math.min(dkGet(s,r),dk.sets);dk.cnt[dkKey(s,r)]=(c+1)%(dk.sets+1);dkDraw()};
 $('bBet').onclick=()=>{const o=BETS.filter(b=>b<=bal),i=o.indexOf(bet);bet=o[(i+1)%o.length];menuInfo()};
-$('bBot').onclick=()=>{menuInfo();if(dkTotal()<30){$('mErr').textContent='В колоде должно быть минимум 30 карт.';return}$('mErr').textContent='';
+$('bBot').onclick=()=>{lastCnt=-1;if(room&&!V&&ws&&ws.readyState==1)tx({t:'leave'});room=null;code='';store.del('caravan.room');menuInfo();if(dkTotal()<30){$('mErr').textContent='В колоде должно быть минимум 30 карт.';return}$('mErr').textContent='';
  online=false;S=newGame(Math.random,[buildDeck(),null]);V=viewFor(S,0);sel=-1;note='';settled=false;showMenu(false);render()};
 menuInfo();
+const sndDraw=()=>{$('bSnd').textContent='Звук: '+(snd?'вкл':'выкл')};
+$('bSnd').onclick=()=>{snd=!snd;store.set('caravan.snd',snd?'1':'0');sndDraw();unlock();cardSound()};sndDraw();
 
 $('bNew').onclick=()=>net({t:'create',bet:obet,priv:false});
+$('bBack').onclick=()=>{showMenu(false);if(V)render()};
+$('rbadge').onclick=copyCode;$('wCopy').onclick=copyCode;$('wMenu').onclick=()=>showMenu(true);
+$('wLeave').onclick=()=>{room=null;V=null;code='';store.del('caravan.room');clearBoard();showMenu(true);
+ connect(()=>tx({t:'leave'}))};
 $('bPriv').onclick=()=>net({t:'create',bet:obet,priv:true});
 $('bList').onclick=()=>net({t:'list'});
 $('bTop').onclick=()=>net({t:'lb'});
@@ -294,6 +353,29 @@ $('app').onclick=e=>{
  if(!moves(V,0).some(x=>['t','h','i','tp','ti','ei'].every(f=>x[f]===m[f]))){note=V.open[0]>0?'Сейчас можно только число в пустой караван.':'Так нельзя: число должно идти по направлению каравана или совпадать по масти.';return render()}
  act(m)};
 
-loadArt();
+// ---- музыка: треки из art/music (список отдаёт сервер) и свои файлы (хранятся в браузере, на сервер не уходят)
+const au=new Audio();au.preload='none';let tracks=[],cur=-1,objU='';au.volume=Math.min(1,Math.max(0,+(store.get('caravan.vol')??.6)));
+const dbo=(m,f)=>new Promise((res,rej)=>{try{const r=indexedDB.open('caravan-music',1);r.onupgradeneeded=()=>r.result.createObjectStore('t',{keyPath:'id',autoIncrement:true});
+ r.onerror=()=>rej(r.error);r.onsuccess=()=>{const q=f(r.result.transaction('t',m).objectStore('t'));q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)}}catch(e){rej(e)}});
+async function musLoad(){let a=[],u=[];try{a=(await(await fetch('music')).json()).map(t=>({...t,own:false}))}catch{}
+ try{u=(await dbo('readonly',s=>s.getAll())).map(t=>({id:t.id,name:t.name,blob:t.blob,own:true}))}catch{}
+ const was=tracks[cur];tracks=[...a,...u];cur=was?tracks.findIndex(t=>t.own==was.own&&t.name==was.name&&t.id==was.id):-1;musDraw()}
+function musDraw(){$('musT').textContent=cur>=0&&!au.paused?'⏸':'▶';$('musV').value=au.volume;
+ $('musL').innerHTML=tracks.length?tracks.map((t,i)=>`<div class="mrow"><button class="btn${i==cur?' on':''}" data-t="${i}">${i==cur&&!au.paused?'▶ ':''}${esc(t.name)}</button>${t.own?`<button class="x" data-d="${t.id}" aria-label="Удалить">✕</button>`:''}</div>`).join(''):'<div class="lbn">Треков пока нет. Положи файлы в art/music или загрузи свои.</div>'}
+function musPlay(i){if(!tracks.length)return;i=(i+tracks.length)%tracks.length;const t=tracks[i];cur=i;if(objU){URL.revokeObjectURL(objU);objU=''}
+ au.src=t.own?(objU=URL.createObjectURL(t.blob)):t.url;au.play().catch(()=>{});musDraw()}
+au.onended=()=>musPlay(cur+1);au.onplay=au.onpause=musDraw;au.onerror=()=>{if(cur>=0)toast('Не удалось проиграть трек')};
+$('bMus').onclick=()=>{$('mus').style.display='flex';musLoad()};$('musX').onclick=()=>{$('mus').style.display='none'};
+$('musT').onclick=()=>{if(cur<0)musPlay(0);else if(au.paused)au.play().catch(()=>{});else au.pause()};
+$('musP').onclick=()=>musPlay(cur<0?0:cur-1);$('musN').onclick=()=>musPlay(cur+1);
+$('musV').oninput=e=>{au.volume=+e.target.value;store.set('caravan.vol',String(au.volume))};
+$('musU').onclick=()=>$('musF').click();
+$('musF').onchange=async e=>{let bad=0;for(const f of e.target.files){if(f.size>40e6){bad++;continue}try{await dbo('readwrite',s=>s.add({name:f.name.replace(/\.[^.]+$/,''),blob:f}))}catch{bad++}}
+ e.target.value='';if(bad)toast('Не загружено файлов: '+bad+' (до 40 МБ, формат аудио)');musLoad()};
+$('musL').onclick=async e=>{const d=e.target.closest('[data-d]');
+ if(d){const i=tracks.findIndex(t=>t.own&&t.id==+d.dataset.d);if(i==cur){au.pause();au.removeAttribute('src');cur=-1}try{await dbo('readwrite',s=>s.delete(+d.dataset.d))}catch{}return musLoad()}
+ const b=e.target.closest('[data-t]');if(b)musPlay(+b.dataset.t)};
+
+uiDraw();loadArt();
 if(store.get('caravan.room'))resume();
 </script></body></html>

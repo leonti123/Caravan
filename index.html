@@ -2,16 +2,17 @@
 <html lang="ru"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Караван</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Rye&family=Special+Elite&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#1c130a;--fg:#f0dcae;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root{--tgi:calc(var(--tg-safe-area-inset-top,0px) + var(--tg-content-safe-area-inset-top,0px));--bg:#1c130a;--fg:#f0dcae;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#120c06}}
 :root[data-theme="dark"]{--bg:#120c06}
 html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
 *{box-sizing:border-box}
 body{margin:0;height:100%;background:var(--bg);color:var(--fg);font:13px/1.25 "Special Elite",Rockwell,Georgia,serif;overflow:hidden;padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
-#app{position:relative;height:100%;display:grid;grid-template-columns:1fr clamp(190px,32%,290px);gap:6px;padding:4px;--ch:clamp(48px,17vh,80px);--cw:calc(var(--ch)*.7);--half:calc((100vh - 56px)/2)}
-@media (orientation:portrait){#app{position:fixed;top:0;left:0;width:100vh;height:100vw;transform-origin:0 0;transform:rotate(90deg) translateY(-100%);--ch:clamp(48px,17vw,80px);--half:calc((100vw - 56px)/2)}}
+#app{position:relative;height:100%;display:grid;grid-template-columns:1fr clamp(190px,32%,290px);gap:6px;padding:4px;--ch:clamp(48px,17vh,80px);--cw:calc(var(--ch)*.7);--half:calc((100vh - 56px - var(--tgi))/2);padding-top:calc(4px + var(--tgi))}
+@media (orientation:portrait){#app{position:fixed;top:0;left:0;width:100vh;height:100vw;transform-origin:0 0;transform:rotate(90deg) translateY(-100%);--ch:clamp(48px,17vw,80px);--half:calc((100vw - 56px)/2);padding-top:4px;padding-left:calc(4px + var(--tgi))}}
 #board{display:grid;grid-template-rows:1fr 34px 1fr;border-radius:8px;overflow:hidden;box-shadow:inset 0 0 40px #000a;
  background:radial-gradient(circle at 4% 11%,#1a120a 0 2.5px,#0000 3.5px),radial-gradient(circle at 96% 62%,#1a120a 0 2.5px,#0000 3.5px),repeating-linear-gradient(.6deg,#ffffff0c 0 1px,#0000 1px 4px,#0000001c 4px 5px,#0000 5px 9px),linear-gradient(#9a7a52 0,#7a5b3a 23.4%,#24180c 23.4%,#24180c 24.2%,#a68660 24.2%,#80613f 48.4%,#24180c 48.4%,#24180c 49.2%,#8e6e48 49.2%,#6a4c30 73.4%,#24180c 73.4%,#24180c 74.2%,#9d7d56 74.2%,#6e5032 100%)}
 .row{display:grid;grid-template-columns:repeat(3,1fr);min-height:0}
@@ -64,6 +65,24 @@ aside{display:grid;grid-template-rows:auto 1fr auto;gap:4px;min-height:0}
 .jr .btn{flex:none}
 #mErr{min-height:18px;color:#f0a830;font-size:12px;text-align:center;max-width:260px}
 :focus-visible{outline:3px solid #f0a830;outline-offset:2px}
+/* стиль «как в Fallout»: стол из досок, выцарапанные подписи, голубые счётчики, небрежно лежащие карты */
+.hastable .mc i{color:#d8d2c0b0;text-shadow:0 1px 0 #000c,0 0 2px #0008;letter-spacing:2px;text-transform:uppercase;font-size:12px}
+.hastable .mc b{color:#46c4ff;text-shadow:0 0 6px #46c4ff88,0 1px 2px #000}
+.hastable .mc b.ok{color:#8fe08a}.hastable .mc b.bad{color:#ff8a78}
+.hastable .slot{border-color:#ffffff30}
+.hastable .c{box-shadow:0 3px 7px #000c,0 0 1px #000}
+.hastable .c:nth-child(3n+1){transform:rotate(-1.6deg)}
+.hastable .c:nth-child(3n+2){transform:rotate(1.2deg)}
+.hastable .c:nth-child(3n){transform:rotate(-.5deg) translateX(2px)}
+.hastable .h{box-shadow:0 3px 6px #000b}
+/* руки веером на столе */
+.hand{display:block;position:relative;flex:1;min-width:0;height:calc(var(--ch)*1.3 + 30px);--hh:calc(var(--ch)*1.3)}
+.h,.h:last-child{position:absolute;flex:none;top:0;left:calc((100% - var(--hh)*.7)*var(--p));width:calc(var(--hh)*.7);height:var(--hh);min-width:0;overflow:visible;
+ transform-origin:50% 120%;transform:translateY(calc(var(--d)*28px)) rotate(calc((var(--p) - .5)*28deg));transition:transform .12s}
+.h.sel{transform:translateY(calc(var(--d)*28px - 16px)) rotate(calc((var(--p) - .5)*28deg));z-index:99!important;outline:2px solid #f0a830}
+#app.hastable{background:var(--table) center/cover;border-radius:8px}
+.hastable #board{background:none;box-shadow:none}
+.hastable aside{padding:2px}
 </style></head><body>
 <div id="app">
 <main id="board"><div class="row" id="r1"></div><div class="row" id="mid"></div><div class="row" id="r0"></div></main>
@@ -78,10 +97,24 @@ aside{display:grid;grid-template-rows:auto 1fr auto;gap:4px;min-height:0}
 <button class="btn" id="bNew">Создать комнату</button>
 <div class="jr"><input id="code" maxlength="4" placeholder="Код" autocomplete="off"><button class="btn" id="bJoin">Войти</button></div>
 <div id="mErr"></div></div></div>
+<script>
+// Telegram Mini App: раскрыть на весь экран и попробовать зафиксировать альбомную ориентацию.
+// Если система не даёт повернуть сама — работает запасной вариант: в портрете игра рисуется повёрнутой на 90°.
+(()=>{const t=window.Telegram&&Telegram.WebApp;if(!t)return;
+ const ok=(f)=>{try{f()}catch{}};
+ ok(()=>t.ready());ok(()=>t.expand());
+ ok(()=>t.disableVerticalSwipes&&t.disableVerticalSwipes());
+ ok(()=>{t.setHeaderColor&&t.setHeaderColor('#120c06');t.setBackgroundColor&&t.setBackgroundColor('#120c06')});
+ const lock=()=>ok(()=>screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(()=>{}));
+ ok(()=>t.requestFullscreen&&t.isVersionAtLeast&&t.isVersionAtLeast('8.0')&&t.requestFullscreen());
+ lock();ok(()=>t.onEvent('fullscreenChanged',lock));
+})();
+</script>
 <script type="module">
 import{moves,isN,cv,newGame,play,viewFor}from'./shared/rules.js';
 import{botMove}from'./shared/ai.js';
 const SU=['♠','♥','♦','♣'],R=['','A','2','3','4','5','6','7','8','9','10','J','Q','K'],red=s=>s==1||s==2,face=c=>c.r>=11;
+const fan=(x,n)=>{const p=n>1?x/(n-1):.5;return`--p:${p.toFixed(3)};--d:${((p-.5)**2).toFixed(3)};z-index:${x+1}`};
 const nm=(c,s=c.s)=>c.r?R[c.r]+SU[s]:'🃏',$=id=>document.getElementById(id);
 const store={get:k=>{try{return localStorage.getItem(k)}catch{return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch{}},del:k=>{try{localStorage.removeItem(k)}catch{}}};
 const pid=store.get('caravan.pid')||(()=>{const v=crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2)+Date.now();store.set('caravan.pid',v);return v})();
@@ -117,8 +150,8 @@ function infoText(){if(!online)return'Бот · в центре: слева со
  return`Комната ${code}${oppOn?'':' · соперник отключился'}${s}`}
 function render(){if(!V)return;
  $('r1').innerHTML=[0,1,2].map(i=>laneH(1,i)).join('');$('mid').innerHTML=[0,1,2].map(midH).join('');$('r0').innerHTML=[0,1,2].map(i=>laneH(0,i)).join('');
- $('oh').innerHTML=V.hand[1].map(()=>'<div class="h back"></div>').join('');
- $('hand').innerHTML=V.hand[0].map((c,x)=>{const a=ART.cards[key(c)];return`<button class="h${red(c.s)?' r':''}${x==sel?' sel':''}${c.r>=11||!c.r?' f':''}${a?' art':''}" data-h="${x}" style="${a?`background-image:url(${a})`:''}"><u>${c.r?R[c.r]:'🃏'}<br>${c.r?SU[c.s]:''}</u>${c.r?pips(c.r,c.s):'<span>🃏</span>'}</button>`}).join('');
+ $('oh').innerHTML=V.hand[1].map((_,x)=>`<div class="h back" style="${fan(x,V.hand[1].length)}"></div>`).join('');
+ $('hand').innerHTML=V.hand[0].map((c,x)=>{const a=ART.cards[key(c)];return`<button class="h${red(c.s)?' r':''}${x==sel?' sel':''}${c.r>=11||!c.r?' f':''}${a?' art':''}" data-h="${x}" style="${a?`background-image:url(${a});`:''}${fan(x,V.hand[0].length)}"><u>${c.r?R[c.r]:'🃏'}<br>${c.r?SU[c.s]:''}</u>${c.r?pips(c.r,c.s):'<span>🃏</span>'}</button>`}).join('');
  $('od').textContent=V.deck[1];$('dd').textContent=V.deck[0];$('msg').textContent=text();$('info').textContent=infoText();
  $('disc').disabled=V.over||V.turn!=0||sel<0||V.open[0]>0&&moves(V,0).every(m=>m.t=='num')}
 setInterval(()=>{if(online&&V&&!V.over&&deadline)$('info').textContent=infoText()},1000);

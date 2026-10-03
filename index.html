@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Караван</title>
+<title data-i="title">Караван</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Rye&family=Special+Elite&display=swap" rel="stylesheet">
 <style>
@@ -129,35 +129,35 @@ aside{display:grid;grid-template-rows:auto 1fr auto;gap:4px;min-height:0}
 <main id="board"><div class="row" id="r1"></div><div class="row" id="mid"></div><div class="row" id="r0"></div></main>
 <aside>
 <div class="top"><div class="hand opp" id="oh"></div><div class="deck back" id="od"></div></div>
-<div class="ctl"><div id="msg"></div><div class="btns"><button class="btn" id="disc">Сбросить</button><button class="btn" id="new">Меню</button></div><div id="info"></div></div>
+<div class="ctl"><div id="msg"></div><div class="btns"><button class="btn" id="disc" data-i="discard">Сбросить</button><button class="btn" id="new" data-i="menu">Меню</button></div><div id="info"></div></div>
 <div class="bot"><div class="hand me" id="hand"></div><div class="deck back" id="dd"></div></div>
 </aside>
-<div id="menu"><h2>Караван</h2>
-<button class="pip" id="bMus" aria-label="Музыка"><svg viewBox="0 0 64 64"><rect x="4" y="22" width="12" height="20" rx="3" fill="#4a3322" stroke="#f0a830" stroke-width="2"/><rect x="48" y="22" width="12" height="20" rx="3" fill="#4a3322" stroke="#f0a830" stroke-width="2"/><rect x="12" y="10" width="40" height="44" rx="6" fill="#2a1d12" stroke="#f0a830" stroke-width="3"/><rect x="17" y="15" width="30" height="21" rx="3" fill="#0d2a1a" stroke="#46c4ff" stroke-width="2"/><path d="M22 28h4l2-6 3 10 3-8 2 4h5" fill="none" stroke="#46c4ff" stroke-width="2" stroke-linejoin="round"/><circle cx="23" cy="45" r="3.5" fill="#f0a830"/><circle cx="33" cy="45" r="3.5" fill="#f0a830"/><rect x="40" y="42" width="7" height="6" rx="1" fill="#f0a830"/></svg>Музыка</button>
-<button class="btn" id="bBack" style="display:none">Вернуться в игру</button>
+<div id="menu"><h2 data-i="title">Караван</h2>
+<button class="pip" id="bMus" data-al="music" aria-label="Музыка"><svg viewBox="0 0 64 64"><rect x="4" y="22" width="12" height="20" rx="3" fill="#4a3322" stroke="#f0a830" stroke-width="2"/><rect x="48" y="22" width="12" height="20" rx="3" fill="#4a3322" stroke="#f0a830" stroke-width="2"/><rect x="12" y="10" width="40" height="44" rx="6" fill="#2a1d12" stroke="#f0a830" stroke-width="3"/><rect x="17" y="15" width="30" height="21" rx="3" fill="#0d2a1a" stroke="#46c4ff" stroke-width="2"/><path d="M22 28h4l2-6 3 10 3-8 2 4h5" fill="none" stroke="#46c4ff" stroke-width="2" stroke-linejoin="round"/><circle cx="23" cy="45" r="3.5" fill="#f0a830"/><circle cx="33" cy="45" r="3.5" fill="#f0a830"/><rect x="40" y="42" width="7" height="6" rx="1" fill="#f0a830"/></svg><span data-i="music">Музыка</span></button>
+<button class="btn" id="bBack" data-i="back" style="display:none">Вернуться в игру</button>
 <div class="cols">
-<div class="col"><h3>С ботом</h3>
-<button class="btn" id="bBot">Против бота</button>
-<div class="jr"><button class="btn" id="bDeck">Колода</button><button class="btn" id="bBet">Ставка</button></div>
+<div class="col"><h3 data-i="vsBot">С ботом</h3>
+<button class="btn" id="bBot" data-i="bot">Против бота</button>
+<div class="jr"><button class="btn" id="bDeck" data-i="deck">Колода</button><button class="btn" id="bBet">Ставка</button></div>
 <div id="bal"></div>
 <button class="btn" id="bSnd"></button>
-<button class="btn" id="bRules">Правила</button></div>
-<div class="col"><h3>Онлайн</h3>
-<input class="nick" id="nick" maxlength="16" placeholder="Твоё имя" autocomplete="off">
+<button class="btn" id="bRules" data-i="rules">Правила</button><button class="btn" id="bLang"></button></div>
+<div class="col"><h3 data-i="online">Онлайн</h3>
+<input class="nick" id="nick" maxlength="16" data-ph="yourName" placeholder="Твоё имя" autocomplete="off">
 <div id="obal">Подключаюсь…</div>
-<div class="jr"><button class="btn" id="bQ">Быстрый поиск</button><button class="btn" id="bOBet">Ставка</button></div>
-<button class="btn" id="bNew">Создать открытую комнату</button>
-<button class="btn" id="bPriv">Создать приватную комнату</button>
-<div class="jr"><button class="btn" id="bList">Комнаты</button><button class="btn" id="bTop">Рейтинг</button></div>
-<div class="jr"><input id="code" maxlength="4" placeholder="Код" autocomplete="off"><button class="btn" id="bJoin">Войти</button></div>
+<div class="jr"><button class="btn" id="bQ" data-i="quick">Быстрый поиск</button><button class="btn" id="bOBet">Ставка</button></div>
+<button class="btn" id="bNew" data-i="newOpen">Создать открытую комнату</button>
+<button class="btn" id="bPriv" data-i="newPriv">Создать приватную комнату</button>
+<div class="jr"><button class="btn" id="bList" data-i="rooms">Комнаты</button><button class="btn" id="bTop" data-i="top">Рейтинг</button></div>
+<div class="jr"><input id="code" maxlength="4" data-ph="codePh" placeholder="Код" autocomplete="off"><button class="btn" id="bJoin" data-i="join">Войти</button></div>
 </div></div>
 <div id="mErr"></div></div>
 <div id="rbadge"></div>
-<div id="wait"><h2>Ждём соперника…</h2><div id="waitCode"></div><div class="lbn" id="waitInfo"></div><button class="btn" id="wCopy">Скопировать код</button><button class="btn" id="wMenu">В меню</button><button class="btn" id="wLeave">Выйти из комнаты</button></div>
-<div id="dk"><h2>Колода</h2><div id="dkSets"></div><div id="dkGrid"></div><div id="dkInfo"></div>
-<div class="jr" style="width:min(96%,520px)"><button class="btn" id="dkAll">Все</button><button class="btn" id="dkFast">Быстрая</button><button class="btn" id="dkClr">Очистить</button><button class="btn" id="dkOk">Готово</button></div></div>
-<div id="ov"><h2 id="ovT"></h2><div id="ovB"></div><button class="btn" id="ovX" style="width:160px">Закрыть</button></div>
-<div id="mus"><h2>Музыка</h2><div id="musL"></div><div class="mctl"><button class="btn" id="musP">⏮</button><button class="btn" id="musT">▶</button><button class="btn" id="musN">⏭</button></div><div class="mctl"><span>🔈</span><input type="range" id="musV" min="0" max="1" step=".05"></div><input type="file" id="musF" accept="audio/*" multiple hidden><div class="mctl"><button class="btn" id="musU">Загрузить свои</button><button class="btn" id="musA"></button><button class="btn" id="musX">Закрыть</button></div></div>
+<div id="wait"><h2 data-i="waiting">Ждём соперника…</h2><div id="waitCode"></div><div class="lbn" id="waitInfo"></div><button class="btn" id="wCopy" data-i="copyCode">Скопировать код</button><button class="btn" id="wMenu" data-i="toMenu">В меню</button><button class="btn" id="wLeave" data-i="leaveRoom">Выйти из комнаты</button></div>
+<div id="dk"><h2 data-i="deck">Колода</h2><div id="dkSets"></div><div id="dkGrid"></div><div id="dkInfo"></div>
+<div class="jr" style="width:min(96%,520px)"><button class="btn" id="dkAll" data-i="all">Все</button><button class="btn" id="dkFast" data-i="fast">Быстрая</button><button class="btn" id="dkClr" data-i="clear">Очистить</button><button class="btn" id="dkOk" data-i="done">Готово</button></div></div>
+<div id="ov"><h2 id="ovT"></h2><div id="ovB"></div><button class="btn" id="ovX" data-i="close" style="width:160px">Закрыть</button></div>
+<div id="mus"><h2 data-i="music">Музыка</h2><div id="musL"></div><div class="mctl"><button class="btn" id="musP">⏮</button><button class="btn" id="musT">▶</button><button class="btn" id="musN">⏭</button></div><div class="mctl"><span>🔈</span><input type="range" id="musV" min="0" max="1" step=".05"></div><input type="file" id="musF" accept="audio/*" multiple hidden><div class="mctl"><button class="btn" id="musU" data-i="upload">Загрузить свои</button><button class="btn" id="musA"></button><button class="btn" id="musX" data-i="close">Закрыть</button></div></div>
 <div id="toast"></div></div>
 <script>
 // Telegram Mini App: раскрыть на весь экран и попробовать зафиксировать альбомную ориентацию.
@@ -180,6 +180,125 @@ const fan=(x,n)=>{const p=n>1?x/(n-1):.5;return`--p:${p.toFixed(3)};--d:${((p-.5
 const nm=(c,s=c.s)=>c.r?R[c.r]+SU[s]:'🃏',$=id=>document.getElementById(id);
 const store={get:k=>{try{return localStorage.getItem(k)}catch{return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch{}},del:k=>{try{localStorage.removeItem(k)}catch{}}};
 const pid=store.get('caravan.pid')||(()=>{const v=crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2)+Date.now();store.set('caravan.pid',v);return v})();
+// ---- язык интерфейса: ru / en. Переключатель в меню, выбор хранится в браузере.
+// Без выбора берётся язык Telegram или браузера: русский → ru, остальные → en. Новый язык = ещё один объект в D.
+const D={
+ru:{title:'Караван',discard:'Сбросить',menu:'Меню',music:'Музыка',back:'Вернуться в игру',vsBot:'С ботом',bot:'Против бота',deck:'Колода',rules:'Правила',
+ online:'Онлайн',yourName:'Твоё имя',quick:'Быстрый поиск',newOpen:'Создать открытую комнату',newPriv:'Создать приватную комнату',rooms:'Комнаты',top:'Рейтинг',codePh:'Код',join:'Войти',
+ waiting:'Ждём соперника…',copyCode:'Скопировать код',toMenu:'В меню',leaveRoom:'Выйти из комнаты',all:'Все',fast:'Быстрая',clear:'Очистить',done:'Готово',close:'Закрыть',upload:'Загрузить свои',langBtn:'English',
+ lanes:['Бархан','Колодец','Перевал'],what:{num:'выложил число',face:'сыграл лицевую карту',dc:'сбросил карту',dcar:'распустил караван'},disband:'Распустить караван',del:'Удалить',
+ oppLeft:'Соперник вышел из игры. Победа!',oppTimeout:'Соперник не успел сходить. Победа!',win:'Победа! Ты продал больше караванов.',youLeft:'Ты вышел из игры. Поражение.',timeUp:'Время вышло. Поражение.',lose:'Поражение. Соперник выиграл партию.',
+ oppTurn:'Ход соперника…',tapCar:'Нажми на свой караван.',tapCard:'Нажми на карту в любом караване.',oppDid:w=>'Соперник '+w+'. ',playNum:'Выложи число (A–10) в пустой караван.',yourTurn:'Твой ход.',
+ botInfo:(b,c)=>'Бот · ставка '+b+' · крышки: '+c,sec:'с',room:'Комната',oppOff:'соперник отключился',
+ noSrv:'Онлайн не подключён: впиши адрес сервера в SERVER в index.html (инструкция в DEPLOY.md).',noConn:'Нет связи с сервером. Онлайн работает только на запущенном сервере.',connLost:'Связь потеряна. Переподключаюсь…',player:'Игрок',
+ betL:'Ставка',betw:'ставка',capsL:'Крышки',winsL:'побед за сутки',srvOff:'Сервер не подключён',connecting:'Подключаюсь…',
+ daily:d=>'+'+d+' крышек за новый день!',won:n=>'Выиграно '+n+' крышек',lost:n=>'Проиграно '+n+' крышек',
+ openRooms:'Открытые комнаты',noRooms:'Открытых комнат нет. Создай свою.',lbTitle:'Рейтинг: победы за сутки',results:'Итоги',msk:'МСК',noWin:'В те сутки никто не побеждал.',noRes:'Итогов пока нет.',
+ myWins:w=>'Твои победы в текущие сутки: '+w,lbNext:x=>'Рейтинг обновится '+x+' МСК (каждый день в 14:00)',
+ queued:'Ищем соперника…',inGame:'У тебя идёт партия. Нажми «Вернуться в игру».',codeL:'Код',copied:c=>'Код '+c+' скопирован',roomCode:c=>'Код комнаты: '+c,
+ privInfo:'Приватная комната: соперник входит только по коду. Отправь ему этот код.',openInfo:'Открытая комната: её видно другим в списке «Комнаты». Можно и отправить код.',
+ deckInfo:n=>'колода: '+n+' карт',sets:'Наборов',cardsMin:n=>'Карт: '+n+' (минимум 30)',deckMin:'В колоде должно быть минимум 30 карт.',blk:'ч',rd:'к',
+ sound:'Звук',on:'вкл',off:'выкл',auto:'Авто',numOwn:'Числа кладутся только в свои караваны.',tapExact:'Нажми именно на карту в караване.',onlyNum:'Сейчас можно только число в пустой караван.',
+ noMove:'Так нельзя: число должно идти по направлению каравана или совпадать по масти.',noTracks:'Треков пока нет. Положи файлы в art/music или загрузи свои.',playFail:'Не удалось проиграть трек',
+ upFail:n=>'Не загружено файлов: '+n+' (до 40 МБ, формат аудио)',
+ rulesHtml:`<h4>Цель</h4>
+<p>У каждого игрока <b>три каравана</b> (Бархан, Колодец, Перевал). Караван напротив каравана соперника образует <b>пару</b>. Очки каравана — это сумма чисел на его картах. Нужно довести караван до <b>21–26 очков</b>.</p>
+<p><b>Кто выиграл пару:</b></p>
+<ul><li>у тебя 21–26, а у соперника меньше 21 или больше 26 — пара твоя;</li><li>у обоих 21–26 — пару берёт тот, у кого очков больше;</li><li>очки равны или ни у кого нет 21–26 — пара пока ничья;</li><li>больше 26 — это перебор, такой караван не считается. Его можно распустить.</li></ul>
+<p>В середине стола показаны очки каждой пары: слева соперника, справа твои. Зелёные — это 21–26, красные — перебор.</p>
+<h4>Конец партии</h4>
+<p>Как только во всех трёх парах появился лидер, игра заканчивается сразу. Побеждает тот, у кого пар больше (две или три). Поэтому следи, чтобы последняя пара не закрылась в пользу соперника.</p>
+<p>Ещё одно условие: если после твоего хода у соперника в руке не осталось карт, ты побеждаешь.</p>
+<h4>Колода и рука</h4>
+<ul><li>У каждого своя колода из 54 карт: 52 обычные и 2 джокера.</li><li>Сначала у каждого по 8 карт в руке.</li><li>После каждого хода, кроме роспуска каравана, берёшь карту из своей колоды, пока она не кончилась.</li><li>Против бота можно собрать свою колоду кнопкой «Колода»: от 30 карт, одну и ту же карту не больше трёх раз.</li></ul>
+<h4>Очки карт</h4>
+<ul><li>Туз — 1, числа 2–10 — по номиналу.</li><li>Валет, дама, король и джокер сами очков не дают, у них особые действия.</li></ul>
+<h4>Начало партии</h4>
+<p>Пока в каждом из трёх караванов нет по одной карте, можно только выкладывать числа в пустые караваны. Картинки, джокеры и роспуск недоступны. Если числа выложить нельзя (в руке их нет), разрешён сброс карты.</p>
+<h4>Что можно сделать за ход</h4>
+<p>Выбирай ровно одно действие:</p>
+<ul><li><b>Выложить число</b> (туз–10) в свой караван. Числа кладутся только в свои караваны.</li><li><b>Сыграть картинку или джокера</b> на любую карту в любом караване: своём или соперника.</li><li><b>Сбросить</b> одну карту из руки (кнопка «Сбросить»), потом берёшь новую.</li><li><b>Распустить свой караван</b> (кнопка ✕ в середине стола): все его карты уходят, новая карта не берётся.</li></ul>
+<h4>Как управлять</h4>
+<p>Нажми карту в руке, она поднимется. Число — нажми на свой караван. Картинку или джокера — нажми на нужную карту в караване. Нажми ту же карту ещё раз, чтобы передумать. Если ход запрещён, игра подскажет почему.</p>
+<h4>Как класть числа</h4>
+<ul><li>В пустой караван идёт любое число.</li><li><b>Вторая карта</b> задаёт направление: больше первой — караван идёт вверх (↑), меньше — вниз (↓). Стрелка стоит рядом с названием каравана.</li><li>Дальше число должно идти по направлению: вверх — больше последней карты, вниз — меньше.</li><li><b>Исключение:</b> число <b>той же масти</b>, что и последняя карта, можно класть всегда, даже против направления. Направление при этом не меняется.</li><li><b>Запрет:</b> число с тем же номиналом, что у последней карты, класть нельзя, даже другой масти.</li></ul>
+<p><b>Пример.</b> В караване лежат 3♠, потом 7♥, он идёт вверх. Можно положить 8, 9 или 10 любой масти, а также любое червовое число. Нельзя 4♠ и 7♣.</p>
+<p>Если в караване остаётся меньше двух карт (например, после валета), направление сбрасывается: его задаст следующая карта.</p>
+<h4>Особые карты</h4>
+<p>Картинки и джокер ложатся поверх карты каравана и остаются на ней.</p>
+<ul><li><b>Валет (J)</b> убирает выбранную карту из каравана вместе со всем, что на ней лежит. Остальные карты остаются.</li><li><b>Дама (Q)</b> разворачивает направление каравана и меняет масть его последней карты на масть дамы. Это влияет на исключение по масти.</li><li><b>Король (K)</b> удваивает очки карты, на которую положен. Второй король на ту же карту удваивает ещё раз (×4). Пример: король на шестёрке — она считается как 12.</li><li><b>Джокер</b> на туз убирает со стола все остальные карты масти этого туза, у обоих игроков. Джокер на число убирает все остальные карты такого же номинала на всём столе. Карта, на которую лёг джокер, остаётся.</li></ul>
+<h4>Онлайн</h4>
+<ul><li><b>Время хода:</b> 90 секунд. Не успел — поражение.</li><li><b>Выход из приложения</b> посреди партии засчитывается как поражение. На возвращение при обрыве связи даётся около 8 секунд.</li><li><b>Комнаты:</b> открытая видна всем в списке «Комнаты», приватная доступна только по коду из 4 букв. У игрока может быть только одна комната. Выйти посреди партии нельзя.</li><li><b>Быстрый поиск:</b> случайный соперник, без ставки.</li><li><b>Ставка:</b> 10, 50, 100, 250 или 500 крышек, победитель забирает её. Если у проигравшего крышек меньше ставки, забирается всё, что есть.</li><li><b>Крышки:</b> 100 штук дают при первом заходе за день. Сутки начинаются в 14:00 по Москве.</li><li><b>Рейтинг:</b> топ-10 по числу побед за прошедшие сутки, обновляется в 14:00 по Москве.</li></ul>
+<h4>С ботом</h4>
+<p>Ставка работает и против бота, но только на твоём устройстве и не связана с онлайн-крышками.</p>`},
+en:{title:'Caravan',discard:'Discard',menu:'Menu',music:'Music',back:'Back to game',vsBot:'Vs. bot',bot:'Play the bot',deck:'Deck',rules:'Rules',
+ online:'Online',yourName:'Your name',quick:'Quick match',newOpen:'Create open room',newPriv:'Create private room',rooms:'Rooms',top:'Leaderboard',codePh:'Code',join:'Join',
+ waiting:'Waiting for an opponent…',copyCode:'Copy code',toMenu:'To menu',leaveRoom:'Leave room',all:'All',fast:'Quick',clear:'Clear',done:'Done',close:'Close',upload:'Upload your own',langBtn:'Русский',
+ lanes:['Dune','Well','Pass'],what:{num:'played a number',face:'played a face card',dc:'discarded a card',dcar:'disbanded a caravan'},disband:'Disband caravan',del:'Delete',
+ oppLeft:'Your opponent left the game. You win!',oppTimeout:'Your opponent ran out of time. You win!',win:'Victory! You sold more caravans.',youLeft:'You left the game. Defeat.',timeUp:'Time’s up. Defeat.',lose:'Defeat. Your opponent won the game.',
+ oppTurn:'Opponent’s turn…',tapCar:'Tap one of your caravans.',tapCard:'Tap a card in any caravan.',oppDid:w=>'Opponent '+w+'. ',playNum:'Play a number (A–10) onto an empty caravan.',yourTurn:'Your turn.',
+ botInfo:(b,c)=>'Bot · bet '+b+' · caps: '+c,sec:'s',room:'Room',oppOff:'opponent disconnected',
+ noSrv:'Online is not connected: set the server address in SERVER in index.html (see DEPLOY.md).',noConn:'Can’t reach the server. Online only works on a running server.',connLost:'Connection lost. Reconnecting…',player:'Player',
+ betL:'Bet',betw:'bet',capsL:'Caps',winsL:'daily wins',srvOff:'Server not connected',connecting:'Connecting…',
+ daily:d=>'+'+d+' caps for a new day!',won:n=>'Won '+n+' caps',lost:n=>'Lost '+n+' caps',
+ openRooms:'Open rooms',noRooms:'No open rooms. Create your own.',lbTitle:'Leaderboard: daily wins',results:'Results',msk:'MSK',noWin:'Nobody won that day.',noRes:'No results yet.',
+ myWins:w=>'Your wins this day: '+w,lbNext:x=>'The leaderboard updates '+x+' MSK (every day at 14:00)',
+ queued:'Looking for an opponent…',inGame:'You have a game in progress. Tap “Back to game”.',codeL:'Code',copied:c=>'Code '+c+' copied',roomCode:c=>'Room code: '+c,
+ privInfo:'Private room: your opponent can join only with the code. Send them this code.',openInfo:'Open room: others can see it in the “Rooms” list. You can also send the code.',
+ deckInfo:n=>'deck: '+n+' cards',sets:'Sets',cardsMin:n=>'Cards: '+n+' (minimum 30)',deckMin:'The deck must have at least 30 cards.',blk:'B',rd:'R',
+ sound:'Sound',on:'on',off:'off',auto:'Auto',numOwn:'Numbers can only be played on your own caravans.',tapExact:'Tap a specific card in a caravan.',onlyNum:'Right now you can only play a number onto an empty caravan.',
+ noMove:'You can’t do that: a number must follow the caravan’s direction or match the suit.',noTracks:'No tracks yet. Put files in art/music or upload your own.',playFail:'Couldn’t play the track',
+ upFail:n=>'Files not uploaded: '+n+' (up to 40 MB, audio format)',
+ rulesHtml:`<h4>Goal</h4>
+<p>Each player has <b>three caravans</b> (Dune, Well, Pass). A caravan facing the opponent's caravan forms a <b>pair</b>. A caravan's score is the sum of the numbers on its cards. Bring a caravan to <b>21–26 points</b>.</p>
+<p><b>Who wins a pair:</b></p>
+<ul><li>you have 21–26 and your opponent has less than 21 or more than 26 — the pair is yours;</li><li>both have 21–26 — the pair goes to whoever has more points;</li><li>the scores are equal, or neither has 21–26 — the pair is still tied;</li><li>over 26 is a bust, and such a caravan doesn't count. You can disband it.</li></ul>
+<p>The middle of the table shows the score of each pair: your opponent's on the left, yours on the right. Green means 21–26, red means bust.</p>
+<h4>End of the game</h4>
+<p>As soon as all three pairs have a leader, the game ends immediately. The player with more pairs (two or three) wins. So make sure the last pair doesn't close in your opponent's favor.</p>
+<p>One more condition: if your opponent has no cards left in hand after your move, you win.</p>
+<h4>Deck and hand</h4>
+<ul><li>Each player has their own 54-card deck: 52 regular cards and 2 jokers.</li><li>Everyone starts with 8 cards in hand.</li><li>After every move except disbanding a caravan, you draw a card from your deck while it lasts.</li><li>Against the bot you can build your own deck with the “Deck” button: at least 30 cards, and no more than three copies of the same card.</li></ul>
+<h4>Card values</h4>
+<ul><li>Ace is 1, numbers 2–10 are worth their face value.</li><li>Jack, Queen, King and Joker score nothing themselves; they have special effects.</li></ul>
+<h4>Start of the game</h4>
+<p>Until each of the three caravans has one card, you can only play numbers onto empty caravans. Face cards, jokers and disbanding are not available. If you can't play a number (you have none in hand), you may discard a card.</p>
+<h4>What you can do on your turn</h4>
+<p>Choose exactly one action:</p>
+<ul><li><b>Play a number</b> (Ace–10) onto one of your caravans. Numbers can only go onto your own caravans.</li><li><b>Play a face card or Joker</b> onto any card in any caravan: yours or your opponent's.</li><li><b>Discard</b> one card from your hand (the “Discard” button), then draw a new one.</li><li><b>Disband one of your caravans</b> (the ✕ button in the middle of the table): all its cards are removed and you don't draw a card.</li></ul>
+<h4>Controls</h4>
+<p>Tap a card in your hand and it rises. For a number, tap your caravan. For a face card or Joker, tap the target card in a caravan. Tap the same card again to change your mind. If a move isn't allowed, the game tells you why.</p>
+<h4>Playing numbers</h4>
+<ul><li>Any number can go onto an empty caravan.</li><li>The <b>second card</b> sets the direction: higher than the first — the caravan goes up (↑), lower — down (↓). The arrow is shown next to the caravan's name.</li><li>After that, numbers must follow the direction: up — higher than the last card, down — lower.</li><li><b>Exception:</b> a number of the <b>same suit</b> as the last card can always be played, even against the direction. The direction doesn't change.</li><li><b>Restriction:</b> a number with the same rank as the last card can't be played, even of another suit.</li></ul>
+<p><b>Example.</b> A caravan holds 3♠, then 7♥, and goes up. You can play an 8, 9 or 10 of any suit, and also any heart number. You can't play 4♠ or 7♣.</p>
+<p>If a caravan is left with fewer than two cards (for example, after a Jack), its direction resets: the next card sets it.</p>
+<h4>Special cards</h4>
+<p>Face cards and the Joker are placed on a card of a caravan and stay on it.</p>
+<ul><li><b>Jack (J)</b> removes the chosen card from the caravan together with everything lying on it. The other cards stay.</li><li><b>Queen (Q)</b> reverses the caravan's direction and changes the suit of its last card to the Queen's suit. This affects the same-suit exception.</li><li><b>King (K)</b> doubles the value of the card it is placed on. A second King on the same card doubles it again (×4). Example: a King on a six makes it count as 12.</li><li><b>Joker</b> on an Ace removes all other cards of that Ace's suit from the table, for both players. A Joker on a number removes all other cards of the same rank from the whole table. The card the Joker was played on stays.</li></ul>
+<h4>Online</h4>
+<ul><li><b>Turn time:</b> 90 seconds. Run out of time and you lose.</li><li><b>Leaving the app</b> in the middle of a game counts as a loss. After a dropped connection you have about 8 seconds to come back.</li><li><b>Rooms:</b> an open room is visible to everyone in the “Rooms” list, a private one can only be joined with its 4-letter code. A player can have only one room. You can't leave in the middle of a game.</li><li><b>Quick match:</b> a random opponent, no bet.</li><li><b>Bet:</b> 10, 50, 100, 250 or 500 caps, and the winner takes it. If the loser has fewer caps than the bet, the winner takes everything they have.</li><li><b>Caps:</b> you get 100 on your first visit each day. The day starts at 14:00 Moscow time.</li><li><b>Leaderboard:</b> top 10 by wins over the previous day, updated at 14:00 Moscow time.</li></ul>
+<h4>Vs. bot</h4>
+<p>Betting works against the bot too, but only on your device and it isn't linked to your online caps.</p>`}};
+const detectLang=()=>{let c='';try{c=Telegram.WebApp.initDataUnsafe.user.language_code||''}catch{}return/^ru/i.test(c||navigator.language||'')?'ru':'en'};
+let lang=store.get('caravan.lang');if(!D[lang])lang=detectLang();
+const T=k=>D[lang][k],t=(k,...a)=>{const v=D[lang][k];return typeof v=='function'?v(...a):v};
+// Сервер шлёт ошибки по-русски (по ним же работают тесты и проверка «Комната не найдена»), поэтому для en переводим на клиенте.
+const SRV=[[/^Открой игру через Telegram/,()=>'Open the game through Telegram (the bot’s mini app)'],[/^Нет идентификатора$/,()=>'No player ID'],
+ [/^Не хватает крышек для такой ставки$/,()=>'Not enough caps for this bet'],[/^Сначала доиграй текущую партию$/,()=>'Finish your current game first'],
+ [/^У тебя уже есть комната ([^\s.]+)\./,(_,c)=>'You already have room '+c+'. Leave it to create a new one'],[/^Комната не найдена$/,()=>'Room not found'],
+ [/^Комната занята$/,()=>'The room is full'],[/^Партия в этой комнате уже закончилась$/,()=>'The game in this room has already ended'],
+ [/^Не хватает крышек: ставка (\d+)$/,(_,b)=>'Not enough caps: the bet is '+b],[/^Нельзя выйти посреди партии$/,()=>'You can’t leave in the middle of a game'],
+ [/^Игра не начата$/,()=>'The game hasn’t started'],[/^Игра окончена$/,()=>'The game is over'],[/^Сейчас не твой ход$/,()=>'It’s not your turn'],
+ [/^Так нельзя$/,()=>'You can’t do that'],[/^Некорректная колода$/,()=>'Invalid deck']];
+const srv=m=>{if(lang=='ru')return m;for(const[re,f]of SRV){const x=re.exec(m);if(x)return f(...x)}return m};
+function applyStatic(){document.documentElement.lang=lang;document.title=t('title');
+ document.querySelectorAll('[data-i]').forEach(e=>e.textContent=t(e.dataset.i));
+ document.querySelectorAll('[data-ph]').forEach(e=>e.placeholder=t(e.dataset.ph));
+ document.querySelectorAll('[data-al]').forEach(e=>e.setAttribute('aria-label',t(e.dataset.al)));
+ $('bLang').textContent=t('langBtn')}
+function setLang(l){lang=l;store.set('caravan.lang',l);applyStatic();menuInfo();obalDraw();sndDraw();autoDraw();uiDraw();if(V)render();if($('dk').style.display=='flex')dkDraw()}
+$('bLang').onclick=()=>setLang(lang=='ru'?'en':'ru');applyStatic();
+
 let V=null,S=null,ws=null,sel=-1,note='',deadline=0,oppOn=true,online=false,code='',room=null;
 const menuOn=()=>getComputedStyle($('menu')).display!='none';
 
@@ -209,21 +328,20 @@ const tableCount=()=>V.car.flat().reduce((n,k)=>n+k.cards.reduce((m,e)=>m+1+e.at
 // ---- отрисовка
 const PP={2:[[50,22],[50,78]],3:[[50,22],[50,50],[50,78]],4:[[30,22],[70,22],[30,78],[70,78]],5:[[30,22],[70,22],[50,50],[30,78],[70,78]],6:[[30,22],[70,22],[30,50],[70,50],[30,78],[70,78]],7:[[30,22],[70,22],[50,36],[30,50],[70,50],[30,78],[70,78]],8:[[30,22],[70,22],[50,36],[30,50],[70,50],[50,64],[30,78],[70,78]],9:[[30,20],[70,20],[30,40],[70,40],[50,50],[30,60],[70,60],[30,80],[70,80]],10:[[30,18],[70,18],[50,29],[30,40],[70,40],[30,60],[70,60],[50,71],[30,82],[70,82]]};
 const pips=(r,s)=>r==1||r>10?`<span>${r==1?SU[s]:R[r]}</span>`:PP[r].map(([x,y])=>`<i class="p${y>50?' d':''}" style="left:${x}%;top:${y}%">${SU[s]}</i>`).join('');
-const PL=['Бархан','Колодец','Перевал'],WHAT={num:'выложил число',face:'сыграл лицевую карту',dc:'сбросил карту',dcar:'распустил караван'};
 function cardH(e,n){const c=e.c,s=e.s,t=R[c.r],a=ART.cards[key(c)];
  return`<button class="c${red(s)?' r':''}${face(c)?' f':''}${a?' art':''}" data-e="${n}" style="--i:${n}${a?`;background-image:url(${a})`:''}"><u>${t}<br>${SU[s]}</u>${pips(c.r,s)}<u class="b">${t}<br>${SU[s]}</u>${e.att.length?`<em>${e.att.map(x=>nm(x)).join(' ')}</em>`:''}</button>`}
 function laneH(p,i){const k=V.car[p][i];
  return`<div class="car ${p?'opp':'me'}" data-p="${p}" data-i="${i}" style="--n:${Math.max(k.cards.length-1,1)}">${k.cards.length?'':'<div class="slot"></div>'}${k.cards.map((e,n)=>cardH(e,n)).join('')}</div>`}
 function midH(i){const a=cv(V.car[1][i]),b=cv(V.car[0][i]),k=V.car[0][i],cl=v=>v>26?'bad':v>=21?'ok':'';
- return`<div class="mc"><b class="${cl(a)}">${a}</b><i>${PL[i]}${k.dir>0?' ↑':k.dir<0?' ↓':''}</i><b class="${cl(b)}">${b}</b>${k.cards.length?`<button class="x" data-dcar="${i}" aria-label="Распустить караван">✕</button>`:''}</div>`}
+ return`<div class="mc"><b class="${cl(a)}">${a}</b><i>${T('lanes')[i]}${k.dir>0?' ↑':k.dir<0?' ↓':''}</i><b class="${cl(b)}">${b}</b>${k.cards.length?`<button class="x" data-dcar="${i}" aria-label="${t('disband')}">✕</button>`:''}</div>`}
 function text(){if(note)return note;if(!V)return'';const l=V.last;
- if(V.over){if(V.winner==0)return l&&l.t=='leave'?'Соперник вышел из игры. Победа!':l&&l.t=='timeout'?'Соперник не успел сходить. Победа!':'Победа! Ты продал больше караванов.';return l&&l.t=='leave'&&l.who==0?'Ты вышел из игры. Поражение.':l&&l.t=='timeout'&&l.who==0?'Время вышло. Поражение.':'Поражение. Соперник выиграл партию.'}
- if(V.turn==1)return'Ход соперника…';
- if(sel>=0)return isN(V.hand[0][sel])?'Нажми на свой караван.':'Нажми на карту в любом караване.';
- return(l&&l.who==1?'Соперник '+WHAT[l.t]+'. ':'')+(V.open[0]>0?'Выложи число (A–10) в пустой караван.':'Твой ход.')}
-function infoText(){if(!online)return'Бот · ставка '+bet+' · крышки: '+bal;
- const s=deadline&&V&&!V.over?' · '+Math.max(0,Math.floor((deadline-Date.now())/1000))+' с':'';
- return`Комната ${code}${oppOn?'':' · соперник отключился'}${s}`}
+ if(V.over){if(V.winner==0)return l&&l.t=='leave'?t('oppLeft'):l&&l.t=='timeout'?t('oppTimeout'):t('win');return l&&l.t=='leave'&&l.who==0?t('youLeft'):l&&l.t=='timeout'&&l.who==0?t('timeUp'):t('lose')}
+ if(V.turn==1)return t('oppTurn');
+ if(sel>=0)return isN(V.hand[0][sel])?t('tapCar'):t('tapCard');
+ return(l&&l.who==1?t('oppDid',T('what')[l.t]):'')+(V.open[0]>0?t('playNum'):t('yourTurn'))}
+function infoText(){if(!online)return t('botInfo',bet,bal);
+ const s=deadline&&V&&!V.over?' · '+Math.max(0,Math.floor((deadline-Date.now())/1000))+' '+t('sec'):'';
+ return`${t('room')} ${code}${oppOn?'':' · '+t('oppOff')}${s}`}
 function render(){if(!V)return;
  const tc=tableCount();if(lastCnt>=0&&tc>lastCnt)cardSound();lastCnt=tc;
  if(V.over&&!online&&!settled){settled=true;bal=Math.max(0,bal+(V.winner==0?bet:-bet));saveBal()}
@@ -248,42 +366,42 @@ const tx=o=>ws.send(JSON.stringify(o.t=='hello'?{...o,pid,initData:tgInit()}:{..
 const SERVER='';// адрес онлайн-сервера, например 'wss://caravan-xxxx.onrender.com'. Пусто = тот же хост, где открыта игра (см. DEPLOY.md)
 const noServer=()=>!SERVER&&/\.github\.io$/.test(location.hostname);
 const tgName=()=>{try{return Telegram.WebApp.initDataUnsafe.user.first_name||''}catch{return''}};
-const myName=()=>$('nick').value.trim()||tgName()||'Игрок'+pid.slice(0,4);
+const myName=()=>$('nick').value.trim()||tgName()||t('player')+pid.slice(0,4);
 function connect(then){
- if(noServer()){$('mErr').textContent='Онлайн не подключён: впиши адрес сервера в SERVER в index.html (инструкция в DEPLOY.md).';return}
+ if(noServer()){$('mErr').textContent=t('noSrv');return}
  if(ws&&ws.readyState==1)return then();
  ws=new WebSocket(SERVER||(location.protocol=='https:'?'wss://':'ws://')+location.host);
  ws.onopen=()=>{tx({t:'hello',name:myName()});then()};ws.onmessage=e=>onMsg(JSON.parse(e.data));
- ws.onerror=()=>{$('mErr').textContent='Нет связи с сервером. Онлайн работает только на запущенном сервере.'};
- ws.onclose=()=>{if(online&&(room&&!V||V&&!V.over)){note='Связь потеряна. Переподключаюсь…';render();setTimeout(resume,2000)}}}
+ ws.onerror=()=>{$('mErr').textContent=t('noConn')};
+ ws.onclose=()=>{if(online&&(room&&!V||V&&!V.over)){note=t('connLost');render();setTimeout(resume,2000)}}}
 function resume(){const c=store.get('caravan.room');if(c)connect(()=>tx({t:'join',code:c}))}
 const CAP=(()=>{let p='';for(let i=0;i<24;i++){const a=i*Math.PI/12,r=i%2?44:50;p+=(i?'L':'M')+(50+r*Math.cos(a)).toFixed(1)+' '+(50+r*Math.sin(a)).toFixed(1)}
  return`<svg class="cap" viewBox="0 0 100 100"><path d="${p}Z" fill="#a8672a" stroke="#4a2a0e" stroke-width="4"/><circle cx="50" cy="50" r="33" fill="#d6a352" stroke="#6b3d14" stroke-width="3"/><circle cx="50" cy="50" r="22" fill="none" stroke="#8a5420" stroke-width="2.5"/><path d="M28 40Q50 20 72 40" fill="none" stroke="#fff7" stroke-width="5" stroke-linecap="round"/></svg>`})();
 const esc=x=>String(x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const fmtT=t=>new Date(t).toLocaleString('ru-RU',{timeZone:'Europe/Moscow',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+const fmtT=t=>new Date(t).toLocaleString(lang=='ru'?'ru-RU':'en-GB',{timeZone:'Europe/Moscow',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
 let me=null,obet=0,toastT=0;
 function toast(t){const e=$('toast');e.textContent=t;e.style.display='block';clearTimeout(toastT);toastT=setTimeout(()=>e.style.display='none',3500)}
 function showOv(t,h,c){$('ovT').textContent=t;$('ovB').className=c||'';$('ovB').innerHTML=h;$('ov').style.display='flex'}
-function obalDraw(){$('bOBet').innerHTML='Ставка: '+(+obet)+CAP;$('obal').innerHTML=me?'Крышки: '+(+me.bal)+CAP+' · побед за сутки: '+(+me.w):(noServer()?'Сервер не подключён':'Подключаюсь…')}
+function obalDraw(){$('bOBet').innerHTML=t('betL')+': '+(+obet)+CAP;$('obal').innerHTML=me?t('capsL')+': '+(+me.bal)+CAP+' · '+t('winsL')+': '+(+me.w):(noServer()?t('srvOff'):t('connecting'))}
 function onMsg(m){
  if(m.t=='me'){me=m;obet=Math.min(obet,m.bal);obalDraw();
-  if(m.claimed)toast('+'+m.daily+' крышек за новый день!');
-  else if(m.delta)toast(m.delta>0?'Выиграно '+m.delta+' крышек':'Проиграно '+(-m.delta)+' крышек')}
- else if(m.t=='rooms')showOv('Открытые комнаты',m.rooms.length?m.rooms.map(r=>`<button class="btn rm" data-c="${esc(r.code)}">${esc(r.code)} · ${esc(r.name)} · ставка ${+r.bet}${CAP}</button>`).join(''):'<div class="lbn">Открытых комнат нет. Создай свою.</div>')
- else if(m.t=='lb')showOv('Рейтинг: победы за сутки',(m.from?`<div class="lbn">Итоги ${fmtT(m.from)} — ${fmtT(m.to)} МСК</div>`+(m.rows.length?m.rows.map((r,i)=>`<div class="lbr"><b>${i+1}</b><span>${esc(r.n)}</span>${r.w}</div>`).join(''):'<div class="lbn">В те сутки никто не побеждал.</div>'):'<div class="lbn">Итогов пока нет.</div>')+`<div class="lbn">Твои победы в текущие сутки: ${m.w}<br>Рейтинг обновится ${fmtT(m.next)} МСК (каждый день в 14:00)</div>`)
+  if(m.claimed)toast(t('daily',m.daily));
+  else if(m.delta)toast(m.delta>0?t('won',m.delta):t('lost',-m.delta))}
+ else if(m.t=='rooms')showOv(t('openRooms'),m.rooms.length?m.rooms.map(r=>`<button class="btn rm" data-c="${esc(r.code)}">${esc(r.code)} · ${esc(r.name)} · ${t('betw')} ${+r.bet}${CAP}</button>`).join(''):`<div class="lbn">${t('noRooms')}</div>`)
+ else if(m.t=='lb')showOv(t('lbTitle'),(m.from?`<div class="lbn">${t('results')} ${fmtT(m.from)} — ${fmtT(m.to)} ${t('msk')}</div>`+(m.rows.length?m.rows.map((r,i)=>`<div class="lbr"><b>${i+1}</b><span>${esc(r.n)}</span>${r.w}</div>`).join(''):`<div class="lbn">${t('noWin')}</div>`):`<div class="lbn">${t('noRes')}</div>`)+`<div class="lbn">${t('myWins',m.w)}<br>${t('lbNext',fmtT(m.next))}</div>`)
  else if(m.t=='room'){const fresh=!V||V.over||m.code!==code;
   if(fresh){V=null;S=null;online=true;lastCnt=-1;clearBoard()}
   room={code:m.code,priv:!!m.priv,bet:m.bet|0};code=m.code;store.set('caravan.room',code);$('mErr').textContent='';
   if(fresh)showMenu(false);else uiDraw()}
- else if(m.t=='queued')$('mErr').textContent='Ищем соперника…';
+ else if(m.t=='queued')$('mErr').textContent=t('queued');
  else if(m.t=='state'){const cont=V&&online&&!V.over&&code===m.code;online=true;V=m.view;code=m.code;deadline=m.left!==undefined?(m.left?Date.now()+m.left:0):m.deadline;oppOn=m.opp;sel=-1;note='';
   room=room&&room.code===m.code?room:{code:m.code,priv:false,bet:0};if(!cont)showMenu(false);else uiDraw();render()}
  else if(m.t=='opp'){oppOn=m.online;if(V)$('info').textContent=infoText()}
  else if(m.t=='err'){if(m.msg=='Комната не найдена')store.del('caravan.room');
-  if(menuOn())$('mErr').textContent=m.msg;else{note=m.msg;render()}}}
+  const em=srv(m.msg);if(menuOn())$('mErr').textContent=em;else{note=em;render()}}}
 const net=o=>{$('mErr').textContent='';
  if(['create','join','queue'].includes(o.t)){
-  if(V&&online&&!V.over){$('mErr').textContent='У тебя идёт партия. Нажми «Вернуться в игру».';return}
+  if(V&&online&&!V.over){$('mErr').textContent=t('inGame');return}
   if(V&&!online&&!V.over){V=null;S=null} // начал онлайн — партия с ботом брошена
  }
  connect(()=>tx(o))};
@@ -292,9 +410,9 @@ function uiDraw(){const on=menuOn();
  $('bBack').style.display=(V&&!V.over)||(room&&!V)?'':'none';
  $('wait').style.display=room&&!V&&!on?'flex':'none';
  const b=$('rbadge');b.style.display=room&&!on?'block':'none';
- if(room){b.textContent=room.priv?'🔒 Код: '+room.code:'Комната '+room.code;$('waitCode').textContent=room.code;
-  $('waitInfo').innerHTML=(room.priv?'Приватная комната: соперник входит только по коду. Отправь ему этот код.':'Открытая комната: её видно другим в списке «Комнаты». Можно и отправить код.')+(room.bet?'<br>Ставка: '+room.bet+CAP:'')}}
-function copyCode(){if(!room)return;const c=room.code,done=()=>toast('Код '+c+' скопирован'),fail=()=>toast('Код комнаты: '+c);
+ if(room){b.textContent=room.priv?'🔒 '+t('codeL')+': '+room.code:t('room')+' '+room.code;$('waitCode').textContent=room.code;
+  $('waitInfo').innerHTML=(room.priv?t('privInfo'):t('openInfo'))+(room.bet?'<br>'+t('betL')+': '+room.bet+CAP:'')}}
+function copyCode(){if(!room)return;const c=room.code,done=()=>toast(t('copied',c)),fail=()=>toast(t('roomCode',c));
  try{navigator.clipboard.writeText(c).then(done,fail)}catch{fail()}}
 
 // ---- колода, наборы и ставки (против бота)
@@ -307,12 +425,12 @@ function buildDeck(){const d=[];for(const[s,r]of dkAllKeys())for(let i=0;i<Math.
 const BETS=[0,10,50,100,250,500];
 let bal=+store.get(balS)||500,bet=50,settled=true;
 const saveBal=()=>store.set(balS,String(bal));
-function menuInfo(){if(bal<10){bal=100;saveBal()}bet=Math.min(bet,bal);$('bBet').innerHTML='Ставка: '+(+bet)+CAP;$('bal').innerHTML='Крышки: '+(+bal)+CAP+' · колода: '+dkTotal()+' карт'}
+function menuInfo(){if(bal<10){bal=100;saveBal()}bet=Math.min(bet,bal);$('bBet').innerHTML=t('betL')+': '+(+bet)+CAP;$('bal').innerHTML=t('capsL')+': '+(+bal)+CAP+' · '+t('deckInfo',dkTotal())}
 function dkDraw(){const g=$('dkGrid'),rows=[0,1,2,3].map(s=>`<div class="dkr">${R.slice(1).map((l,i)=>cell(s,i+1,l+SU[s])).join('')}</div>`);
- rows.push(`<div class="dkr">${cell(0,0,'🃏 ч')}${cell(1,0,'🃏 к')}</div>`);g.innerHTML=rows.join('');
+ rows.push(`<div class="dkr">${cell(0,0,'🃏 '+t('blk'))}${cell(1,0,'🃏 '+t('rd'))}</div>`);g.innerHTML=rows.join('');
  function cell(s,r,l){const c=Math.min(dkGet(s,r),dk.sets);return`<button class="dkc${c?' on':''}${red(s)||(!r&&s==1)?' r':''}" data-k="${s},${r}">${l}<b>${c?'×'+c:''}</b></button>`}
- $('dkSets').innerHTML=`<button class="btn" id="dkN" style="width:auto;padding:4px 10px">Наборов: ${dk.sets}</button>`;
- const n=dkTotal();$('dkInfo').textContent='Карт: '+n+' (минимум 30)';$('dkOk').disabled=n<30;
+ $('dkSets').innerHTML=`<button class="btn" id="dkN" style="width:auto;padding:4px 10px">${t('sets')}: ${dk.sets}</button>`;
+ const n=dkTotal();$('dkInfo').textContent=t('cardsMin',n);$('dkOk').disabled=n<30;
  try{store.set(dkS,JSON.stringify(dk))}catch{}}
 $('bDeck').onclick=()=>{dkDraw();$('dk').style.display='flex'};
 $('dkOk').onclick=()=>{$('dk').style.display='none';menuInfo()};
@@ -322,10 +440,10 @@ $('dkFast').onclick=()=>{dk.cnt={};dkAllKeys().forEach(([s,r])=>dk.cnt[dkKey(s,r
 $('dk').onclick=e=>{if(e.target.id=='dkN'){dk.sets=dk.sets%3+1;return dkDraw()}
  const b=e.target.closest('.dkc');if(!b)return;const[s,r]=b.dataset.k.split(',').map(Number),c=Math.min(dkGet(s,r),dk.sets);dk.cnt[dkKey(s,r)]=(c+1)%(dk.sets+1);dkDraw()};
 $('bBet').onclick=()=>{const o=BETS.filter(b=>b<=bal),i=o.indexOf(bet);bet=o[(i+1)%o.length];menuInfo()};
-$('bBot').onclick=()=>{lastCnt=-1;if(room&&!V&&ws&&ws.readyState==1)tx({t:'leave'});room=null;code='';store.del('caravan.room');menuInfo();if(dkTotal()<30){$('mErr').textContent='В колоде должно быть минимум 30 карт.';return}$('mErr').textContent='';
+$('bBot').onclick=()=>{lastCnt=-1;if(room&&!V&&ws&&ws.readyState==1)tx({t:'leave'});room=null;code='';store.del('caravan.room');menuInfo();if(dkTotal()<30){$('mErr').textContent=t('deckMin');return}$('mErr').textContent='';
  online=false;S=newGame(Math.random,[buildDeck(),null]);V=viewFor(S,0);sel=-1;note='';settled=false;showMenu(false);render()};
 menuInfo();
-const sndDraw=()=>{$('bSnd').textContent='Звук: '+(snd?'вкл':'выкл')};
+const sndDraw=()=>{$('bSnd').textContent=t('sound')+': '+(snd?t('on'):t('off'))};
 $('bSnd').onclick=()=>{snd=!snd;store.set('caravan.snd',snd?'1':'0');sndDraw();unlock();cardSound()};sndDraw();
 
 $('bNew').onclick=()=>net({t:'create',bet:obet,priv:false});
@@ -336,36 +454,7 @@ $('wLeave').onclick=()=>{room=null;V=null;code='';store.del('caravan.room');clea
 $('bPriv').onclick=()=>net({t:'create',bet:obet,priv:true});
 $('bList').onclick=()=>net({t:'list'});
 $('bTop').onclick=()=>net({t:'lb'});
-$('bRules').onclick=()=>showOv('Правила',`<h4>Цель</h4>
-<p>У каждого игрока <b>три каравана</b> (Бархан, Колодец, Перевал). Караван напротив каравана соперника образует <b>пару</b>. Очки каравана — это сумма чисел на его картах. Нужно довести караван до <b>21–26 очков</b>.</p>
-<p><b>Кто выиграл пару:</b></p>
-<ul><li>у тебя 21–26, а у соперника меньше 21 или больше 26 — пара твоя;</li><li>у обоих 21–26 — пару берёт тот, у кого очков больше;</li><li>очки равны или ни у кого нет 21–26 — пара пока ничья;</li><li>больше 26 — это перебор, такой караван не считается. Его можно распустить.</li></ul>
-<p>В середине стола показаны очки каждой пары: слева соперника, справа твои. Зелёные — это 21–26, красные — перебор.</p>
-<h4>Конец партии</h4>
-<p>Как только во всех трёх парах появился лидер, игра заканчивается сразу. Побеждает тот, у кого пар больше (две или три). Поэтому следи, чтобы последняя пара не закрылась в пользу соперника.</p>
-<p>Ещё одно условие: если после твоего хода у соперника в руке не осталось карт, ты побеждаешь.</p>
-<h4>Колода и рука</h4>
-<ul><li>У каждого своя колода из 54 карт: 52 обычные и 2 джокера.</li><li>Сначала у каждого по 8 карт в руке.</li><li>После каждого хода, кроме роспуска каравана, берёшь карту из своей колоды, пока она не кончилась.</li><li>Против бота можно собрать свою колоду кнопкой «Колода»: от 30 карт, одну и ту же карту не больше трёх раз.</li></ul>
-<h4>Очки карт</h4>
-<ul><li>Туз — 1, числа 2–10 — по номиналу.</li><li>Валет, дама, король и джокер сами очков не дают, у них особые действия.</li></ul>
-<h4>Начало партии</h4>
-<p>Пока в каждом из трёх караванов нет по одной карте, можно только выкладывать числа в пустые караваны. Картинки, джокеры и роспуск недоступны. Если числа выложить нельзя (в руке их нет), разрешён сброс карты.</p>
-<h4>Что можно сделать за ход</h4>
-<p>Выбирай ровно одно действие:</p>
-<ul><li><b>Выложить число</b> (туз–10) в свой караван. Числа кладутся только в свои караваны.</li><li><b>Сыграть картинку или джокера</b> на любую карту в любом караване: своём или соперника.</li><li><b>Сбросить</b> одну карту из руки (кнопка «Сбросить»), потом берёшь новую.</li><li><b>Распустить свой караван</b> (кнопка ✕ в середине стола): все его карты уходят, новая карта не берётся.</li></ul>
-<h4>Как управлять</h4>
-<p>Нажми карту в руке, она поднимется. Число — нажми на свой караван. Картинку или джокера — нажми на нужную карту в караване. Нажми ту же карту ещё раз, чтобы передумать. Если ход запрещён, игра подскажет почему.</p>
-<h4>Как класть числа</h4>
-<ul><li>В пустой караван идёт любое число.</li><li><b>Вторая карта</b> задаёт направление: больше первой — караван идёт вверх (↑), меньше — вниз (↓). Стрелка стоит рядом с названием каравана.</li><li>Дальше число должно идти по направлению: вверх — больше последней карты, вниз — меньше.</li><li><b>Исключение:</b> число <b>той же масти</b>, что и последняя карта, можно класть всегда, даже против направления. Направление при этом не меняется.</li><li><b>Запрет:</b> число с тем же номиналом, что у последней карты, класть нельзя, даже другой масти.</li></ul>
-<p><b>Пример.</b> В караване лежат 3♠, потом 7♥, он идёт вверх. Можно положить 8, 9 или 10 любой масти, а также любое червовое число. Нельзя 4♠ и 7♣.</p>
-<p>Если в караване остаётся меньше двух карт (например, после валета), направление сбрасывается: его задаст следующая карта.</p>
-<h4>Особые карты</h4>
-<p>Картинки и джокер ложатся поверх карты каравана и остаются на ней.</p>
-<ul><li><b>Валет (J)</b> убирает выбранную карту из каравана вместе со всем, что на ней лежит. Остальные карты остаются.</li><li><b>Дама (Q)</b> разворачивает направление каравана и меняет масть его последней карты на масть дамы. Это влияет на исключение по масти.</li><li><b>Король (K)</b> удваивает очки карты, на которую положен. Второй король на ту же карту удваивает ещё раз (×4). Пример: король на шестёрке — она считается как 12.</li><li><b>Джокер</b> на туз убирает со стола все остальные карты масти этого туза, у обоих игроков. Джокер на число убирает все остальные карты такого же номинала на всём столе. Карта, на которую лёг джокер, остаётся.</li></ul>
-<h4>Онлайн</h4>
-<ul><li><b>Время хода:</b> 90 секунд. Не успел — поражение.</li><li><b>Выход из приложения</b> посреди партии засчитывается как поражение. На возвращение при обрыве связи даётся около 8 секунд.</li><li><b>Комнаты:</b> открытая видна всем в списке «Комнаты», приватная доступна только по коду из 4 букв. У игрока может быть только одна комната. Выйти посреди партии нельзя.</li><li><b>Быстрый поиск:</b> случайный соперник, без ставки.</li><li><b>Ставка:</b> 10, 50, 100, 250 или 500 крышек, победитель забирает её. Если у проигравшего крышек меньше ставки, забирается всё, что есть.</li><li><b>Крышки:</b> 100 штук дают при первом заходе за день. Сутки начинаются в 14:00 по Москве.</li><li><b>Рейтинг:</b> топ-10 по числу побед за прошедшие сутки, обновляется в 14:00 по Москве.</li></ul>
-<h4>С ботом</h4>
-<p>Ставка работает и против бота, но только на твоём устройстве и не связана с онлайн-крышками.</p>`,'rl');
+$('bRules').onclick=()=>showOv(t('rules'),t('rulesHtml'),'rl');
 $('ovX').onclick=()=>{$('ov').style.display='none'};
 $('ov').onclick=e=>{const b=e.target.closest('.rm');if(b){$('ov').style.display='none';net({t:'join',code:b.dataset.c})}};
 $('bOBet').onclick=()=>{const o=BETS.filter(b=>!me||b<=me.bal),i=o.indexOf(obet);obet=o[(i+1)%o.length];obalDraw()};
@@ -382,9 +471,9 @@ $('app').onclick=e=>{
  if(e.target.closest('#disc')){if(sel>=0)act({t:'dc',h:sel});return}
  const car=e.target.closest('.car');if(!car||sel<0)return;
  const p=+car.dataset.p,i=+car.dataset.i,c=V.hand[0][sel];let m;
- if(isN(c)){if(p!=0){note='Числа кладутся только в свои караваны.';return render()}m={t:'num',h:sel,i}}
- else{const eb=e.target.closest('.c');if(!eb){note='Нажми именно на карту в караване.';return render()}m={t:'face',h:sel,tp:p,ti:i,ei:+eb.dataset.e}}
- if(!moves(V,0).some(x=>['t','h','i','tp','ti','ei'].every(f=>x[f]===m[f]))){note=V.open[0]>0?'Сейчас можно только число в пустой караван.':'Так нельзя: число должно идти по направлению каравана или совпадать по масти.';return render()}
+ if(isN(c)){if(p!=0){note=t('numOwn');return render()}m={t:'num',h:sel,i}}
+ else{const eb=e.target.closest('.c');if(!eb){note=t('tapExact');return render()}m={t:'face',h:sel,tp:p,ti:i,ei:+eb.dataset.e}}
+ if(!moves(V,0).some(x=>['t','h','i','tp','ti','ei'].every(f=>x[f]===m[f]))){note=V.open[0]>0?t('onlyNum'):t('noMove');return render()}
  act(m)};
 
 // ---- музыка: треки из art/music (список отдаёт сервер) и свои файлы (хранятся в браузере, на сервер не уходят)
@@ -395,10 +484,10 @@ async function musLoad(){let a=[],u=[];try{a=(await(await fetch('music')).json()
  try{u=(await dbo('readonly',s=>s.getAll())).map(t=>({id:t.id,name:t.name,blob:t.blob,own:true}))}catch{}
  const was=tracks[cur];tracks=[...a,...u];cur=was?tracks.findIndex(t=>t.own==was.own&&t.name==was.name&&t.id==was.id):-1;musDraw()}
 function musDraw(){$('musT').textContent=cur>=0&&!au.paused?'⏸':'▶';$('musV').value=au.volume;
- $('musL').innerHTML=tracks.length?tracks.map((t,i)=>`<div class="mrow"><button class="btn${i==cur?' on':''}" data-t="${i}">${i==cur&&!au.paused?'▶ ':''}${esc(t.name)}</button>${t.own?`<button class="x" data-d="${t.id}" aria-label="Удалить">✕</button>`:''}</div>`).join(''):'<div class="lbn">Треков пока нет. Положи файлы в art/music или загрузи свои.</div>'}
+ $('musL').innerHTML=tracks.length?tracks.map((t,i)=>`<div class="mrow"><button class="btn${i==cur?' on':''}" data-t="${i}">${i==cur&&!au.paused?'▶ ':''}${esc(t.name)}</button>${t.own?`<button class="x" data-d="${t.id}" aria-label="${t('del')}">✕</button>`:''}</div>`).join(''):`<div class="lbn">${t('noTracks')}</div>`}
 function musPlay(i){if(!tracks.length)return;i=(i+tracks.length)%tracks.length;const t=tracks[i];cur=i;store.set('caravan.last',t.name);if(objU){URL.revokeObjectURL(objU);objU=''}
  au.src=t.own?(objU=URL.createObjectURL(t.blob)):t.url;au.play().catch(()=>{});musDraw()}
-au.onended=()=>musPlay(cur+1);au.onplay=au.onpause=musDraw;au.onerror=()=>{if(cur>=0)toast('Не удалось проиграть трек')};
+au.onended=()=>musPlay(cur+1);au.onplay=au.onpause=musDraw;au.onerror=()=>{if(cur>=0)toast(t('playFail'))};
 $('bMus').onclick=()=>{$('mus').style.display='flex';musLoad()};$('musX').onclick=()=>{$('mus').style.display='none'};
 $('musT').onclick=()=>{if(cur<0)musPlay(0);else if(au.paused)au.play().catch(()=>{});else au.pause()};
 $('musP').onclick=()=>musPlay(cur<0?0:cur-1);$('musN').onclick=()=>musPlay(cur+1);
@@ -406,7 +495,7 @@ $('musV').oninput=e=>{au.volume=+e.target.value;store.set('caravan.vol',String(a
 $('musU').onclick=()=>$('musF').click();
 // автозапуск: браузеры не дают включать звук без касания, поэтому музыка стартует с первого касания экрана
 let auto=store.get('caravan.auto')!=='0',autoDone=false,resumeAfter=false;
-const autoDraw=()=>{$('musA').textContent='Авто: '+(auto?'вкл':'выкл')};autoDraw();
+const autoDraw=()=>{$('musA').textContent=t('auto')+': '+(auto?t('on'):t('off'))};autoDraw();
 $('musA').onclick=()=>{auto=!auto;store.set('caravan.auto',auto?'1':'0');autoDraw()};
 function musAuto(){if(autoDone||!auto)return;autoDone=true;
  const go=()=>{if(cur>=0||!tracks.length)return;const i=tracks.findIndex(t=>!t.own&&t.name==store.get('caravan.last'));musPlay(i<0?0:i)};
@@ -415,7 +504,7 @@ function musAuto(){if(autoDone||!auto)return;autoDone=true;
 document.addEventListener('visibilitychange',()=>{if(document.hidden){resumeAfter=cur>=0&&!au.paused;if(resumeAfter)au.pause()}else if(resumeAfter){resumeAfter=false;au.play().catch(()=>{})}});
 musLoad();
 $('musF').onchange=async e=>{let bad=0;for(const f of e.target.files){if(f.size>40e6){bad++;continue}try{await dbo('readwrite',s=>s.add({name:f.name.replace(/\.[^.]+$/,''),blob:f}))}catch{bad++}}
- e.target.value='';if(bad)toast('Не загружено файлов: '+bad+' (до 40 МБ, формат аудио)');musLoad()};
+ e.target.value='';if(bad)toast(t('upFail',bad));musLoad()};
 $('musL').onclick=async e=>{const d=e.target.closest('[data-d]');
  if(d){const i=tracks.findIndex(t=>t.own&&t.id==+d.dataset.d);if(i==cur){au.pause();au.removeAttribute('src');cur=-1}try{await dbo('readwrite',s=>s.delete(+d.dataset.d))}catch{}return musLoad()}
  const b=e.target.closest('[data-t]');if(b)musPlay(+b.dataset.t)};

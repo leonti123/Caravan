@@ -15,9 +15,30 @@ export function mkDeck(rnd) {
 }
 export const cv = k => k.cards.reduce((a, e) => a + e.c.r * 2 ** e.att.filter(x => x.r == 13).length, 0);
 
-export function newGame(rnd = Math.random) {
+// Своя колода: минимум 30 карт, одну и ту же карту можно взять не больше MAX_SETS раз (по разу из каждого набора).
+export const MAX_SETS = 3;
+export function validDeck(d) {
+  if (!Array.isArray(d) || d.length < 30 || d.length > 54 * MAX_SETS) return false;
+  const n = {};
+  for (const c of d) {
+    if (!c || !Number.isInteger(c.r) || !Number.isInteger(c.s) || c.r < 0 || c.r > 13 || c.s < 0 || c.s > 3) return false;
+    if (c.r == 0 && c.s > 1) return false;
+    const k = c.r + ',' + c.s; n[k] = (n[k] || 0) + 1;
+    if (n[k] > MAX_SETS) return false;
+  }
+  return true;
+}
+
+// decks: необязательно, [колода0, колода1]; null/отсутствует — стандартная колода из 54 карт.
+export function newGame(rnd = Math.random, decks = null) {
+  const mine = p => {
+    const d = decks && decks[p];
+    if (!d) return mkDeck(rnd);
+    if (!validDeck(d)) throw new Error('Некорректная колода');
+    return shuffle(d.map(c => ({ r: c.r, s: c.s })), rnd);
+  };
   const st = {
-    deck: [mkDeck(rnd), mkDeck(rnd)], hand: [[], []],
+    deck: [mine(0), mine(1)], hand: [[], []],
     car: [0, 1].map(() => [0, 1, 2].map(() => ({ cards: [], dir: 0 }))),
     open: [3, 3], turn: 0, over: false, winner: null, last: null,
   };

@@ -11,7 +11,7 @@
 html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
 *{box-sizing:border-box}
 body{margin:0;height:100%;background:var(--bg);color:var(--fg);font:13px/1.25 "Special Elite",Rockwell,Georgia,serif;overflow:hidden;padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
-#app{position:relative;height:100%;display:grid;grid-template-columns:1fr clamp(190px,32%,290px);gap:6px;padding:4px;--ch:clamp(48px,17vh,80px);--cw:calc(var(--ch)*.7);--half:calc((100vh - 56px - var(--tgi))/2);padding-top:calc(4px + var(--tgi))}
+#app{position:relative;height:100%;display:grid;grid-template-columns:1fr clamp(190px,32%,340px);gap:6px;padding:4px;--ch:clamp(48px,17vh,120px);--cw:calc(var(--ch)*.7);--half:calc((100vh - 56px - var(--tgi))/2);padding-top:calc(4px + var(--tgi))}
 @media (orientation:portrait){#app{position:fixed;top:0;left:0;width:100vh;height:100vw;transform-origin:0 0;transform:rotate(90deg) translateY(-100%);--ch:clamp(48px,17vw,80px);--half:calc((100vw - 56px)/2);padding-top:4px;padding-left:calc(4px + var(--tgi))}}
 #board{display:grid;grid-template-rows:1fr 34px 1fr;border-radius:8px;overflow:hidden;box-shadow:inset 0 0 40px #000a;
  background:radial-gradient(circle at 4% 11%,#1a120a 0 2.5px,#0000 3.5px),radial-gradient(circle at 96% 62%,#1a120a 0 2.5px,#0000 3.5px),repeating-linear-gradient(.6deg,#ffffff0c 0 1px,#0000 1px 4px,#0000001c 4px 5px,#0000 5px 9px),linear-gradient(#9a7a52 0,#7a5b3a 23.4%,#24180c 23.4%,#24180c 24.2%,#a68660 24.2%,#80613f 48.4%,#24180c 48.4%,#24180c 49.2%,#8e6e48 49.2%,#6a4c30 73.4%,#24180c 73.4%,#24180c 74.2%,#9d7d56 74.2%,#6e5032 100%)}
@@ -83,6 +83,31 @@ aside{display:grid;grid-template-rows:auto 1fr auto;gap:4px;min-height:0}
 #app.hastable{background:var(--table) center/cover;border-radius:8px}
 .hastable #board{background:none;box-shadow:none}
 .hastable aside{padding:2px}
+.top{padding-top:12px}
+.hastable .slot{border:1px solid #ffffff22}
+#bal{font-size:12px;opacity:.8}
+.cap{width:1.15em;height:1.15em;vertical-align:-.25em;margin:0 .15em}
+#dk{position:absolute;inset:0;z-index:11;background:#000e;display:none;flex-direction:column;align-items:center;justify-content:center;gap:5px;border-radius:8px}
+#dk h2{margin:0;font:400 22px Rye,Georgia,serif;color:#f0a830}
+#dkGrid{width:min(96%,760px);display:flex;flex-direction:column;gap:3px}.dkr{display:flex;gap:3px;width:100%}#dk .jr .btn{flex:1}
+.dkc{flex:1;min-width:0;height:min(9vh,9vw,46px);background:#2a1d12;color:#f0dcae;border:1px solid #f0a83055;border-radius:4px;padding:0;font:700 12px/1.1 Georgia,serif;cursor:pointer;opacity:.45}
+.dkc.on{opacity:1;background:#4a3322;border-color:#f0a830}.dkc.r{color:#ff9a88}.dkc b{display:block;color:#46c4ff;font-size:11px}
+#dkInfo{font-size:12px;color:#f0a830}
+#menu{overflow:auto;justify-content:safe center;padding:8px}
+.cols{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;align-items:flex-start}
+.col{display:flex;flex-direction:column;gap:6px;align-items:center;width:240px}
+.col h3{margin:0;color:#f0dcae;font:400 14px Rye,Georgia,serif}
+.col>.btn{width:230px}.col .jr .btn{flex:1;min-width:0}
+.nick{width:230px;background:#0008;color:#f0dcae;border:1px solid #f0a83088;border-radius:6px;padding:7px;font:inherit;text-align:center}
+#obal{font-size:12px;opacity:.85;text-align:center;max-width:230px}
+#ov{position:absolute;inset:0;z-index:12;background:#000e;display:none;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:8px;padding:8px}
+#ov h2{margin:0;font:400 22px Rye,Georgia,serif;color:#f0a830}
+#ov>.btn{flex:none}
+#ovB{width:min(92%,420px);max-height:62%;overflow:auto;font-size:13px}
+#ovB .btn{display:block;width:100%;margin:3px 0}
+.lbr{display:flex;gap:8px;padding:4px 6px;border-bottom:1px solid #f0a83033}.lbr b{width:24px;color:#46c4ff}.lbr span{flex:1}
+.lbn{font-size:12px;opacity:.8;margin:4px 0;text-align:center}
+#toast{position:absolute;left:50%;top:10px;transform:translateX(-50%);z-index:20;background:#000d;border:1px solid #f0a830;color:#f0a830;border-radius:8px;padding:6px 12px;display:none;max-width:90%;text-align:center}
 </style></head><body>
 <div id="app">
 <main id="board"><div class="row" id="r1"></div><div class="row" id="mid"></div><div class="row" id="r0"></div></main>
@@ -92,11 +117,24 @@ aside{display:grid;grid-template-rows:auto 1fr auto;gap:4px;min-height:0}
 <div class="bot"><div class="hand me" id="hand"></div><div class="deck back" id="dd"></div></div>
 </aside>
 <div id="menu"><h2>Караван</h2>
+<div class="cols">
+<div class="col"><h3>С ботом</h3>
 <button class="btn" id="bBot">Против бота</button>
-<button class="btn" id="bQ">Быстрый поиск</button>
-<button class="btn" id="bNew">Создать комнату</button>
+<div class="jr"><button class="btn" id="bDeck">Колода</button><button class="btn" id="bBet">Ставка</button></div>
+<div id="bal"></div></div>
+<div class="col"><h3>Онлайн</h3>
+<input class="nick" id="nick" maxlength="16" placeholder="Твоё имя" autocomplete="off">
+<div id="obal">Подключаюсь…</div>
+<div class="jr"><button class="btn" id="bQ">Быстрый поиск</button><button class="btn" id="bOBet">Ставка</button></div>
+<div class="jr"><button class="btn" id="bNew">Открытая</button><button class="btn" id="bPriv">Приватная</button></div>
+<div class="jr"><button class="btn" id="bList">Комнаты</button><button class="btn" id="bTop">Рейтинг</button></div>
 <div class="jr"><input id="code" maxlength="4" placeholder="Код" autocomplete="off"><button class="btn" id="bJoin">Войти</button></div>
-<div id="mErr"></div></div></div>
+</div></div>
+<div id="mErr"></div></div>
+<div id="dk"><h2>Колода</h2><div id="dkSets"></div><div id="dkGrid"></div><div id="dkInfo"></div>
+<div class="jr" style="width:min(96%,520px)"><button class="btn" id="dkAll">Все</button><button class="btn" id="dkFast">Быстрая</button><button class="btn" id="dkClr">Очистить</button><button class="btn" id="dkOk">Готово</button></div></div>
+<div id="ov"><h2 id="ovT"></h2><div id="ovB"></div><button class="btn" id="ovX" style="width:160px">Закрыть</button></div>
+<div id="toast"></div></div>
 <script>
 // Telegram Mini App: раскрыть на весь экран и попробовать зафиксировать альбомную ориентацию.
 // Если система не даёт повернуть сама — работает запасной вариант: в портрете игра рисуется повёрнутой на 90°.
@@ -145,10 +183,11 @@ function text(){if(note)return note;if(!V)return'';const l=V.last;
  if(V.turn==1)return'Ход соперника…';
  if(sel>=0)return isN(V.hand[0][sel])?'Нажми на свой караван.':'Нажми на карту в любом караване.';
  return(l&&l.who==1?'Соперник '+WHAT[l.t]+'. ':'')+(V.open[0]>0?'Выложи число (A–10) в пустой караван.':'Твой ход.')}
-function infoText(){if(!online)return'Бот · в центре: слева соперник, справа ты';
+function infoText(){if(!online)return'Бот · ставка '+bet+' · крышки: '+bal;
  const s=deadline&&V&&!V.over?' · '+Math.max(0,Math.ceil((deadline-Date.now())/1000))+' с':'';
  return`Комната ${code}${oppOn?'':' · соперник отключился'}${s}`}
 function render(){if(!V)return;
+ if(V.over&&!online&&!settled){settled=true;bal=Math.max(0,bal+(V.winner==0?bet:-bet));saveBal()}
  $('r1').innerHTML=[0,1,2].map(i=>laneH(1,i)).join('');$('mid').innerHTML=[0,1,2].map(midH).join('');$('r0').innerHTML=[0,1,2].map(i=>laneH(0,i)).join('');
  $('oh').innerHTML=V.hand[1].map((_,x)=>`<div class="h back" style="${fan(x,V.hand[1].length)}"></div>`).join('');
  $('hand').innerHTML=V.hand[0].map((c,x)=>{const a=ART.cards[key(c)];return`<button class="h${red(c.s)?' r':''}${x==sel?' sel':''}${c.r>=11||!c.r?' f':''}${a?' art':''}" data-h="${x}" style="${a?`background-image:url(${a});`:''}${fan(x,V.hand[0].length)}"><u>${c.r?R[c.r]:'🃏'}<br>${c.r?SU[c.s]:''}</u>${c.r?pips(c.r,c.s):'<span>🃏</span>'}</button>`}).join('');
@@ -165,24 +204,80 @@ function botTurn(){if(!S||S.over||online)return;const bm=botMove(S,1);if(bm)play
 const showMenu=b=>{$('menu').style.display=b?'flex':'none'};
 
 // ---- сеть
-const tx=o=>ws.send(JSON.stringify({...o,pid}));
+const tgInit=()=>{try{return Telegram.WebApp.initData||''}catch{return''}};
+const tx=o=>ws.send(JSON.stringify(o.t=='hello'?{...o,pid,initData:tgInit()}:{...o,pid}));
+const SERVER='';// адрес онлайн-сервера, например 'wss://caravan-xxxx.onrender.com'. Пусто = тот же хост, где открыта игра (см. DEPLOY.md)
+const noServer=()=>!SERVER&&/\.github\.io$/.test(location.hostname);
+const tgName=()=>{try{return Telegram.WebApp.initDataUnsafe.user.first_name||''}catch{return''}};
+const myName=()=>$('nick').value.trim()||tgName()||'Игрок'+pid.slice(0,4);
 function connect(then){
+ if(noServer()){$('mErr').textContent='Онлайн не подключён: впиши адрес сервера в SERVER в index.html (инструкция в DEPLOY.md).';return}
  if(ws&&ws.readyState==1)return then();
- ws=new WebSocket((location.protocol=='https:'?'wss://':'ws://')+location.host);
- ws.onopen=then;ws.onmessage=e=>onMsg(JSON.parse(e.data));
+ ws=new WebSocket(SERVER||(location.protocol=='https:'?'wss://':'ws://')+location.host);
+ ws.onopen=()=>{tx({t:'hello',name:myName()});then()};ws.onmessage=e=>onMsg(JSON.parse(e.data));
  ws.onerror=()=>{$('mErr').textContent='Нет связи с сервером. Онлайн работает только на запущенном сервере.'};
  ws.onclose=()=>{if(online&&V&&!V.over){note='Связь потеряна. Переподключаюсь…';render();setTimeout(resume,2000)}}}
 function resume(){const c=store.get('caravan.room');if(c)connect(()=>tx({t:'join',code:c}))}
+const CAP=(()=>{let p='';for(let i=0;i<24;i++){const a=i*Math.PI/12,r=i%2?44:50;p+=(i?'L':'M')+(50+r*Math.cos(a)).toFixed(1)+' '+(50+r*Math.sin(a)).toFixed(1)}
+ return`<svg class="cap" viewBox="0 0 100 100"><path d="${p}Z" fill="#a8672a" stroke="#4a2a0e" stroke-width="4"/><circle cx="50" cy="50" r="33" fill="#d6a352" stroke="#6b3d14" stroke-width="3"/><circle cx="50" cy="50" r="22" fill="none" stroke="#8a5420" stroke-width="2.5"/><path d="M28 40Q50 20 72 40" fill="none" stroke="#fff7" stroke-width="5" stroke-linecap="round"/></svg>`})();
+const esc=x=>String(x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmtT=t=>new Date(t).toLocaleString('ru-RU',{timeZone:'Europe/Moscow',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+let me=null,obet=0,toastT=0;
+function toast(t){const e=$('toast');e.textContent=t;e.style.display='block';clearTimeout(toastT);toastT=setTimeout(()=>e.style.display='none',3500)}
+function showOv(t,h){$('ovT').textContent=t;$('ovB').innerHTML=h;$('ov').style.display='flex'}
+function obalDraw(){$('bOBet').innerHTML='Ставка: '+(+obet)+CAP;$('obal').innerHTML=me?'Крышки: '+(+me.bal)+CAP+' · побед за сутки: '+(+me.w):(noServer()?'Сервер не подключён':'Подключаюсь…')}
 function onMsg(m){
- if(m.t=='room'){code=m.code;store.set('caravan.room',code);$('mErr').textContent='Комната '+code+'. Отправь код другу и подожди…'}
+ if(m.t=='me'){me=m;obet=Math.min(obet,m.bal);obalDraw();
+  if(m.claimed)toast('+'+m.daily+' крышек за новый день!');
+  else if(m.delta)toast(m.delta>0?'Выиграно '+m.delta+' крышек':'Проиграно '+(-m.delta)+' крышек')}
+ else if(m.t=='rooms')showOv('Открытые комнаты',m.rooms.length?m.rooms.map(r=>`<button class="btn rm" data-c="${esc(r.code)}">${esc(r.code)} · ${esc(r.name)} · ставка ${+r.bet}${CAP}</button>`).join(''):'<div class="lbn">Открытых комнат нет. Создай свою.</div>')
+ else if(m.t=='lb')showOv('Рейтинг: победы за сутки',(m.from?`<div class="lbn">Итоги ${fmtT(m.from)} — ${fmtT(m.to)} МСК</div>`+(m.rows.length?m.rows.map((r,i)=>`<div class="lbr"><b>${i+1}</b><span>${esc(r.n)}</span>${r.w}</div>`).join(''):'<div class="lbn">В те сутки никто не побеждал.</div>'):'<div class="lbn">Итогов пока нет.</div>')+`<div class="lbn">Твои победы в текущие сутки: ${m.w}<br>Рейтинг обновится ${fmtT(m.next)} МСК (каждый день в 14:00)</div>`)
+ else if(m.t=='room'){code=m.code;store.set('caravan.room',code);$('mErr').textContent='Комната '+code+(obet?' (ставка '+obet+')':'')+'. Отправь код другу или жди соперника из списка…'}
  else if(m.t=='queued')$('mErr').textContent='Ищем соперника…';
  else if(m.t=='state'){online=true;V=m.view;code=m.code;deadline=m.deadline;oppOn=m.opp;sel=-1;note='';showMenu(false);render()}
  else if(m.t=='opp'){oppOn=m.online;if(V)$('info').textContent=infoText()}
  else if(m.t=='err'){if(m.msg=='Комната не найдена')store.del('caravan.room');
   if($('menu').style.display=='flex')$('mErr').textContent=m.msg;else{note=m.msg;render()}}}
 const net=o=>{$('mErr').textContent='';connect(()=>tx(o))};
-$('bBot').onclick=()=>{online=false;S=newGame();V=viewFor(S,0);sel=-1;note='';showMenu(false);render()};
-$('bNew').onclick=()=>net({t:'create'});
+
+// ---- колода, наборы и ставки (против бота)
+const dkS='caravan.deck',balS='caravan.bal';
+let dk=(()=>{try{const v=JSON.parse(store.get(dkS));if(v&&v.cnt)return v}catch{}return{sets:1,cnt:{}}})();
+const dkKey=(s,r)=>s+'_'+r,dkGet=(s,r)=>dk.cnt[dkKey(s,r)]??1;
+const dkAllKeys=()=>{const a=[];for(let s=0;s<4;s++)for(let r=1;r<=13;r++)a.push([s,r]);a.push([0,0],[1,0]);return a};
+const dkTotal=()=>dkAllKeys().reduce((n,[s,r])=>n+Math.min(dkGet(s,r),dk.sets),0);
+function buildDeck(){const d=[];for(const[s,r]of dkAllKeys())for(let i=0;i<Math.min(dkGet(s,r),dk.sets);i++)d.push({r,s});return d}
+const BETS=[0,10,50,100,250,500];
+let bal=+store.get(balS)||500,bet=50,settled=true;
+const saveBal=()=>store.set(balS,String(bal));
+function menuInfo(){if(bal<10){bal=100;saveBal()}bet=Math.min(bet,bal);$('bBet').innerHTML='Ставка: '+(+bet)+CAP;$('bal').innerHTML='Крышки: '+(+bal)+CAP+' · колода: '+dkTotal()+' карт'}
+function dkDraw(){const g=$('dkGrid'),rows=[0,1,2,3].map(s=>`<div class="dkr">${R.slice(1).map((l,i)=>cell(s,i+1,l+SU[s])).join('')}</div>`);
+ rows.push(`<div class="dkr">${cell(0,0,'🃏 ч')}${cell(1,0,'🃏 к')}</div>`);g.innerHTML=rows.join('');
+ function cell(s,r,l){const c=Math.min(dkGet(s,r),dk.sets);return`<button class="dkc${c?' on':''}${red(s)||(!r&&s==1)?' r':''}" data-k="${s},${r}">${l}<b>${c?'×'+c:''}</b></button>`}
+ $('dkSets').innerHTML=`<button class="btn" id="dkN" style="width:auto;padding:4px 10px">Наборов: ${dk.sets}</button>`;
+ const n=dkTotal();$('dkInfo').textContent='Карт: '+n+' (минимум 30)';$('dkOk').disabled=n<30;
+ try{store.set(dkS,JSON.stringify(dk))}catch{}}
+$('bDeck').onclick=()=>{dkDraw();$('dk').style.display='flex'};
+$('dkOk').onclick=()=>{$('dk').style.display='none';menuInfo()};
+$('dkAll').onclick=()=>{dk.cnt={};dkAllKeys().forEach(([s,r])=>dk.cnt[dkKey(s,r)]=dk.sets);dkDraw()};
+$('dkClr').onclick=()=>{dk.cnt={};dkAllKeys().forEach(([s,r])=>dk.cnt[dkKey(s,r)]=0);dkDraw()};
+$('dkFast').onclick=()=>{dk.cnt={};dkAllKeys().forEach(([s,r])=>dk.cnt[dkKey(s,r)]=(r>=6&&r<=11||r==13||!r)?1:0);dkDraw()};
+$('dk').onclick=e=>{if(e.target.id=='dkN'){dk.sets=dk.sets%3+1;return dkDraw()}
+ const b=e.target.closest('.dkc');if(!b)return;const[s,r]=b.dataset.k.split(',').map(Number),c=Math.min(dkGet(s,r),dk.sets);dk.cnt[dkKey(s,r)]=(c+1)%(dk.sets+1);dkDraw()};
+$('bBet').onclick=()=>{const o=BETS.filter(b=>b<=bal),i=o.indexOf(bet);bet=o[(i+1)%o.length];menuInfo()};
+$('bBot').onclick=()=>{menuInfo();if(dkTotal()<30){$('mErr').textContent='В колоде должно быть минимум 30 карт.';return}$('mErr').textContent='';
+ online=false;S=newGame(Math.random,[buildDeck(),null]);V=viewFor(S,0);sel=-1;note='';settled=false;showMenu(false);render()};
+menuInfo();
+
+$('bNew').onclick=()=>net({t:'create',bet:obet,priv:false});
+$('bPriv').onclick=()=>net({t:'create',bet:obet,priv:true});
+$('bList').onclick=()=>net({t:'list'});
+$('bTop').onclick=()=>net({t:'lb'});
+$('ovX').onclick=()=>{$('ov').style.display='none'};
+$('ov').onclick=e=>{const b=e.target.closest('.rm');if(b){$('ov').style.display='none';net({t:'join',code:b.dataset.c})}};
+$('bOBet').onclick=()=>{const o=BETS.filter(b=>!me||b<=me.bal),i=o.indexOf(obet);obet=o[(i+1)%o.length];obalDraw()};
+$('nick').value=store.get('caravan.name')||tgName();$('nick').onchange=()=>{store.set('caravan.name',$('nick').value.trim());if(ws&&ws.readyState==1)tx({t:'hello',name:myName()})};
+obalDraw();if(!noServer())try{connect(()=>{})}catch{}
 $('bQ').onclick=()=>net({t:'queue'});
 $('bJoin').onclick=()=>{const c=$('code').value.trim().toUpperCase();if(c.length==4)net({t:'join',code:c})};
 $('new').onclick=()=>showMenu(true);

@@ -119,8 +119,9 @@ aside{display:grid;grid-template-rows:auto 1fr auto;gap:4px;min-height:0}
 #musL{width:min(92%,420px);max-height:48%;overflow:auto}
 .mrow{display:flex;gap:4px;margin:3px 0}.mrow .btn{text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mrow .btn.on{border-color:#46c4ff;color:#46c4ff}.mrow .x{flex:none;padding:0 9px}
 .mctl{display:flex;gap:6px;width:min(92%,420px)}.mctl input[type=range]{flex:1;min-width:0;accent-color:#f0a830}
-.pip{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:0;color:#f0a830;font:inherit;cursor:pointer;padding:2px 8px}
-.pip svg{width:46px;height:46px}
+.pip{position:absolute;left:8px;top:calc(6px + var(--tgi));display:flex;flex-direction:column;align-items:center;gap:0;background:none;border:0;color:#f0a830;font:inherit;font-size:11px;cursor:pointer;padding:2px 6px;z-index:1}
+.pip svg{width:36px;height:36px}
+@media (orientation:portrait){.pip{top:6px;left:calc(8px + var(--tgi))}}
 #ovB.rl{width:min(94%,560px);max-height:74%;text-align:left}.rl h4{margin:12px 0 3px;color:#f0a830;font:400 14px Rye,Georgia,serif}.rl h4:first-child{margin-top:0}.rl p,.rl li{margin:3px 0;line-height:1.4}.rl ul{padding-left:18px;margin:3px 0}
 </style></head><body>
 <div id="app">

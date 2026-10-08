@@ -363,7 +363,7 @@ const showMenu=b=>{$('menu').style.display=b?'flex':'none';uiDraw()};
 // ---- сеть
 const tgInit=()=>{try{return Telegram.WebApp.initData||''}catch{return''}};
 const tx=o=>ws.send(JSON.stringify(o.t=='hello'?{...o,pid,initData:tgInit()}:{...o,pid}));
-const SERVER='wss://caravan-q3t1.onrender.com';// адрес онлайн-сервера (Render). Пусто = тот же хост, где открыта игра (см. DEPLOY.md)
+const SERVER='https://caravan-8jit.onrender.com/';// адрес онлайн-сервера (Render). Пусто = тот же хост, где открыта игра (см. DEPLOY.md)
 const noServer=()=>!SERVER&&/\.github\.io$/.test(location.hostname);
 const tgName=()=>{try{return Telegram.WebApp.initDataUnsafe.user.first_name||''}catch{return''}};
 const myName=()=>$('nick').value.trim()||tgName()||t('player')+pid.slice(0,4);

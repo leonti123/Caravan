@@ -66,6 +66,108 @@ export function verifyInitData(initData, token = process.env.TELEGRAM_BOT_TOKEN,
   } catch { return null; }
 }
 
+// ---------- Вход из нативного приложения через бота ----------
+// Приложение просит у сервера одноразовый код (/auth/start), открывает https://t.me/<бот>?start=<код>,
+// пользователь жмёт Start, бот получает /start <код> (webhook /tg/webhook) и связывает код с аккаунтом Telegram.
+// Приложение опрашивает /auth/poll и один раз получает подписанную сессию. Токен бота остаётся только на сервере.
+// «poll» — секрет приложения: код виден в ссылке, поэтому по одному коду сессию получить нельзя.
+const BOT_NAME = process.env.BOT_USERNAME || 'my_caravan_bot';
+const SESSION_MS = 60 * 86400e3, LOGIN_MS = 5 * 60e3, MAX_LOGINS = 5000;
+const sha = s => crypto.createHash('sha256').update(s).digest();
+const sessionKey = () => process.env.SESSION_SECRET || (process.env.TELEGRAM_BOT_TOKEN ? sha('caravan-session:' + process.env.TELEGRAM_BOT_TOKEN) : null);
+export function signSession(u, now = Date.now()) {
+  const key = sessionKey(); if (!key) throw new Error('Нет ключа сессий');
+  const body = Buffer.from(JSON.stringify({ id: u.id, n: u.n || '', exp: now + SESSION_MS })).toString('base64url');
+  return `v1.${body}.${crypto.createHmac('sha256', key).update('v1.' + body).digest('base64url')}`;
+}
+export function verifySession(tok, now = Date.now()) {
+  try {
+    const key = sessionKey(), [v, body, mac] = String(tok).split('.');
+    if (!key || v !== 'v1' || !body || !mac) return null;
+    const calc = crypto.createHmac('sha256', key).update('v1.' + body).digest(), got = Buffer.from(mac, 'base64url');
+    if (got.length !== calc.length || !crypto.timingSafeEqual(got, calc)) return null;
+    const p = JSON.parse(Buffer.from(body, 'base64url').toString());
+    return Number.isInteger(p.id) && p.exp > now ? { id: p.id, n: String(p.n || '') } : null;
+  } catch { return null; }
+}
+const logins = new Map(), byPoll = new Map(); // code -> {hash, at, user}; hash(poll) -> code
+const hits = new Map();
+const limited = (ip, key, max, win = 60e3) => {
+  const k = key + ip, now = Date.now(); let h = hits.get(k);
+  if (!h || now - h.at > win) h = { at: now, n: 0 };
+  hits.set(k, h); return ++h.n > max;
+};
+const clientIp = req => String(req.headers['x-forwarded-for'] || '').split(',').pop().trim() || req.socket.remoteAddress || '';
+function purgeLogins() {
+  const now = Date.now();
+  for (const [c, l] of logins) if (now - l.at > LOGIN_MS) { logins.delete(c); byPoll.delete(l.hash); }
+  for (const [k, h] of hits) if (now - h.at > 120e3) hits.delete(k);
+}
+let tgCall = async (method, payload) => {
+  const r = await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/${method}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+  return r.json();
+};
+export const setTgCall = f => { tgCall = f; }; // для тестов
+const webhookSecret = () => sha('caravan-webhook:' + (process.env.TELEGRAM_BOT_TOKEN || '')).toString('hex');
+export async function registerWebhook() {
+  const base = process.env.WEBHOOK_URL || process.env.RENDER_EXTERNAL_URL;
+  if (!process.env.TELEGRAM_BOT_TOKEN || !base || process.env.TG_WEBHOOK === '0') return;
+  try {
+    const r = await tgCall('setWebhook', { url: base.replace(/\/$/, '') + '/tg/webhook', secret_token: webhookSecret(), allowed_updates: ['message'] });
+    console.log('Webhook бота:', r.ok ? 'установлен' : JSON.stringify(r));
+  } catch (e) { console.error('Не удалось установить webhook:', e.message); }
+}
+export async function onUpdate(u) {
+  const msg = u && u.message;
+  if (!msg || !msg.from || msg.from.is_bot || !Number.isInteger(msg.from.id) || msg.chat?.type !== 'private') return;
+  const m = /^\/start(?:@\w+)?(?:\s+(\S+))?\s*$/.exec(String(msg.text || ''));
+  if (!m) return;
+  const ru = /^ru/i.test(msg.from.language_code || ''), say = text => tgCall('sendMessage', { chat_id: msg.chat.id, text }).catch(() => {});
+  const code = m[1], l = code && logins.get(code);
+  if (!code) return say(ru ? 'Это бот игры «Караван». Чтобы войти в приложение, нажми «Войти через Telegram» в нём.' : 'This is the Caravan game bot. To log in to the app, tap “Log in with Telegram” in it.');
+  if (!l || l.user || Date.now() - l.at > LOGIN_MS) return say(ru ? 'Ссылка для входа устарела. Вернись в приложение и нажми «Войти через Telegram» ещё раз.' : 'This login link has expired. Go back to the app and tap “Log in with Telegram” again.');
+  l.user = { id: msg.from.id, n: cleanName(msg.from.first_name || msg.from.username) };
+  say(ru ? 'Готово! Ты вошёл в Караван. Вернись в приложение.' : 'Done! You are logged in to Caravan. Return to the app.');
+}
+const readBody = (req, max) => new Promise((res, rej) => {
+  let n = 0; const a = [];
+  req.on('data', d => { n += d.length; if (n > max) { rej(new Error('big')); req.destroy(); } else a.push(d); });
+  req.on('end', () => res(Buffer.concat(a).toString()));
+  req.on('error', rej);
+});
+async function authHttp(req, res, p) {
+  const out = (code, obj) => { res.writeHead(code, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }); res.end(JSON.stringify(obj)); };
+  if (req.method !== 'POST') return out(405, { error: 'POST only' });
+  if (!process.env.TELEGRAM_BOT_TOKEN) return out(503, { error: 'Вход через Telegram не настроен на сервере' });
+  const ip = clientIp(req);
+  try {
+    if (p == '/tg/webhook') {
+      const got = Buffer.from(String(req.headers['x-telegram-bot-api-secret-token'] || '')), want = Buffer.from(webhookSecret());
+      if (got.length !== want.length || !crypto.timingSafeEqual(got, want)) return out(401, { error: 'forbidden' });
+      const upd = JSON.parse(await readBody(req, 65536));
+      out(200, { ok: true });
+      return void onUpdate(upd).catch(e => console.error('update:', e.message));
+    }
+    if (p == '/auth/start') {
+      if (limited(ip, 'start', 20)) return out(429, { error: 'Слишком много попыток, подожди минуту' });
+      if (logins.size >= MAX_LOGINS) { purgeLogins(); if (logins.size >= MAX_LOGINS) return out(503, { error: 'Сервер занят, попробуй позже' }); }
+      const code = crypto.randomBytes(18).toString('base64url'), poll = crypto.randomBytes(32).toString('base64url'), hash = sha(poll).toString('hex');
+      logins.set(code, { hash, at: Date.now(), user: null }); byPoll.set(hash, code);
+      return out(200, { code, poll, bot: BOT_NAME, link: `https://t.me/${BOT_NAME}?start=${code}`, expiresIn: LOGIN_MS });
+    }
+    if (p == '/auth/poll') {
+      if (limited(ip, 'poll', 120)) return out(429, { error: 'Слишком много запросов' });
+      const poll = String(JSON.parse(await readBody(req, 1024)).poll || '');
+      const code = poll.length >= 20 && poll.length <= 100 ? byPoll.get(sha(poll).toString('hex')) : null, l = code && logins.get(code);
+      if (!l || Date.now() - l.at > LOGIN_MS) { if (l) { logins.delete(code); byPoll.delete(l.hash); } return out(200, { status: 'expired' }); }
+      if (!l.user) return out(200, { status: 'pending' });
+      logins.delete(code); byPoll.delete(l.hash); // сессия выдаётся один раз
+      return out(200, { status: 'ok', session: signSession(l.user), name: l.user.n, expiresIn: SESSION_MS });
+    }
+  } catch { return out(400, { error: 'bad request' }); }
+  out(404, { error: 'not found' });
+}
+
 // ---------- Игроки, крышки, рейтинг ----------
 // «Сутки» начинаются в 14:00 по Москве (UTC+3, без перехода на летнее время): в это время
 // начисляются ежедневные крышки и обновляется таблица рейтинга (итоги прошедших суток).
@@ -204,7 +306,12 @@ function handle(conn, raw) {
   const err = msg => send(conn, { t: 'err', msg });
   if (m.t == 'hello') {
     if (tgOn) {
-      const tu = verifyInitData(m.initData);
+      let tu = verifyInitData(m.initData);
+      if (!tu && m.session) { // вход из нативного приложения: подписанная сессия, выданная после /start у бота
+        const s = verifySession(m.session);
+        if (!s) return err('Сессия недействительна, войди заново');
+        tu = { id: s.id, first_name: s.n };
+      }
       if (!tu) return err('Открой игру через Telegram (мини-приложение бота)');
       pid = 'tg' + tu.id;
       if (!String(m.name || '').trim()) m.name = tu.first_name || tu.username;
@@ -299,6 +406,7 @@ function onClose(conn) {
 function serveStatic(req, res) {
   let p = decodeURIComponent((req.url || '/').split('?')[0]);
   if (p == '/health') { res.writeHead(200); return res.end('ok'); }
+  if (p == '/auth/start' || p == '/auth/poll' || p == '/tg/webhook') return void authHttp(req, res, p);
   if (p == '/stats') { // закрыто ключом; без STATS_KEY страница отключена
     const key = process.env.STATS_KEY, got = new URL(req.url, 'http://x').searchParams.get('key') || '';
     const h = s => crypto.createHash('sha256').update(s).digest();
@@ -347,14 +455,15 @@ export async function start(port = process.env.PORT || 3000) {
   });
   const sweep = setInterval(() => { // чистим старые комнаты
     for (const [c, r] of rooms) if (Date.now() - r.touched > 3600e3) { clearTimeout(r.timer); rooms.delete(c); }
+    purgeLogins();
   }, 60000);
   sweep.unref();
   const ticker = setInterval(roll, 30000); ticker.unref();
-  server.on('close', () => { clearInterval(sweep); clearInterval(ticker); for (const r of rooms.values()) clearTimeout(r.timer); rooms.clear(); waiting = null; });
+  server.on('close', () => { logins.clear(); byPoll.clear(); hits.clear(); clearInterval(sweep); clearInterval(ticker); for (const r of rooms.values()) clearTimeout(r.timer); rooms.clear(); waiting = null; });
   return new Promise(res => server.listen(port, () => res(server)));
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  start().then(s => console.log('Караван: http://localhost:' + s.address().port));
+  start().then(s => { console.log('Караван: http://localhost:' + s.address().port); registerWebhook(); });
   for (const sig of ['SIGTERM', 'SIGINT']) process.on(sig, () => flush().finally(() => process.exit(0)));
 }
